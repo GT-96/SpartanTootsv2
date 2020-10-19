@@ -14,6 +14,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 //import Ionicons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "./components/screens/AuthCon";
+import PostScreen from "./components/screens/PostScreen";
 
 const HomeStack = createStackNavigator();
 const SettingStack = createStackNavigator();
@@ -22,6 +23,7 @@ const AuthStack = createStackNavigator();
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeHome} />
+    <HomeStack.Screen name="Post" component={PostScreen} />
   </HomeStack.Navigator>
 );
 
@@ -48,6 +50,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator
+    initialRouteName = "Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;

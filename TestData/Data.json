@@ -1,0 +1,91 @@
+{
+    "AllComments": [
+        {
+            "PostID": "1",
+            "Comments": [
+                {
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                }
+            ]
+        },
+        {
+            "PostID": "1",
+            "Comments": [
+                {
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "2",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                }
+            ]
+        },
+        {
+            "PostID": "2",
+            "Comments": [
+                {
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "2",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "3",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                }
+            ]
+        },
+        {
+            "PostID": "3",
+            "Comments": [
+                {
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "2",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "3",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                }
+            ]
+        }
+    ],
+    "Posts": [
+        {
+            "PostID": "1",
+            "UserID": "1",
+            "DateTime": "2020-10-19T00:00:00",
+            "PostDetails": {
+                "Title": "First POst",
+                "Description": "This is my first post hi guys",
+                "Course": "CS 157A"
+            }
+        },
+        {
+            "PostID": "2",
+            "UserID": "2",
+            "DateTime": "2020-10-19T00:00:00",
+            "PostDetails": {
+                "Title": "First POst 2",
+                "Description": "This is the second post hi guys",
+                "Course": "CS 157A"
+            }
+        }
+    ]
+}
