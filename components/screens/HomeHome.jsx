@@ -14,10 +14,12 @@ import {
 export default class HomeHome extends Component {
 
   constructor(props) {
-    console.log(props);
+    const allPosts = require('../../TestData/Posts.json');
+    // console.log(props);
     const navigation = props.navigation;
     super(props);
     this.state = {
+      allPosts,
       data: [
         { id: 1, title: "CS157A Professor Recommendation", time: "08-01-20 12:15 pm", image: "https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A", description: "What was your experience with any 157a professor. Going to be taking it this fall and kind of nervous." },
         { id: 2, title: "CS 149 Threads and Locks", time: "08-29-20 10:43 am", image: "https://via.placeholder.com/400x200/C188F6/FFFFFF/?text=CS149", description: "Any good youtube videos on threads and locks, had a hard time following in class" },
@@ -29,62 +31,65 @@ export default class HomeHome extends Component {
   }
 
   render() {
-    return (
 
-      <View style={styles.container}>
-        <FlatList style={styles.list}
-          data={this.state.data}
-          //keyExtractor= {(item) => {
-          //return item.id.toString;
+    const renderItem = ({ item }) => (
+      <>
+      <View style={styles.separator} />
+        <View>
 
-          keyExtractor={(item, index) => String(index)}
-
-          ItemSeparatorComponent={() => {
-            return (
-              <View style={styles.separator} />
-            )
-          }}
-          renderItem={(post) => {
-
-            const item = post.item;
-
-            return (
-
-              <TouchableOpacity onPress={() => {(this.props.navigation.navigate("Post",{item})) }}>
-                <View style={styles.card}>
-                  <Image style={styles.cardImage} source={{ uri: item.image }} />
-                  <View style={styles.cardHeader}>
-                    <View>
-                      <Text style={styles.title}>{item.title}</Text>
-                      <Text style={styles.description}>{item.description}</Text>
-                      <View style={styles.timeContainer}>
-                        <Image style={styles.iconData} source={{ uri: 'https://img.icons8.com/color/96/3498db/calendar.png' }} />
-                        <Text style={styles.time}>{item.time}</Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.cardFooter}>
-                    <View style={styles.BarContainer}>
-                      <View style={styles.BarSection}>
-                        <TouchableOpacity style={styles.BarButton}>
-                          <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/material/96/2ecc71/visible.png' }} />
-                          <Text style={styles.BarLabel}>78</Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.BarSection}>
-                        <TouchableOpacity style={styles.BarButton}>
-                          <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/ios-glyphs/75/2ecc71/comments.png' }} />
-                          <Text style={styles.BarLabel}>25</Text>
-                        </TouchableOpacity>
-                      </View>
+          {/* <Button title = {item.PostID}/> */}
+          <>
+            <TouchableOpacity onPress={() => { (this.props.navigation.navigate("PostScreen", { item })) }}>
+              <View style={styles.card}>
+                <View testID="user Profile" style={styles.container}>
+                  <Image style ={styles.cardImage} source={{uri: 'https://i.imgur.com/FCfsJ0u.jpg'}}/>
+                  {/* User Profile Overview data like the name, number of upvotes and whatever else will go here */}
+                </View>
+                <Image style={styles.cardImage} source={{ uri: item.PostDetails.CourseImage }} />
+                <View style={styles.cardHeader}>
+                  <View>
+                    <Text style={styles.title}>{item.PostDetails.Title}</Text>
+                    <Text style={styles.description}>{item.description}</Text>
+                    <View style={styles.timeContainer}>
+                      <Image style={styles.iconData} source={{ uri: 'https://img.icons8.com/color/96/3498db/calendar.png' }} />
+                      <Text style={styles.time}>{item.DateTime}</Text>
                     </View>
                   </View>
                 </View>
-              </TouchableOpacity>
+                <View style={styles.cardFooter}>
+                  <View style={styles.BarContainer}>
+                    <View style={styles.BarSection}>
+                      <TouchableOpacity style={styles.BarButton}>
+                        <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/material/96/2ecc71/visible.png' }} />
+                        <Text style={styles.BarLabel}>78</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.BarSection}>
+                      <TouchableOpacity style={styles.BarButton}>
+                        <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/ios-glyphs/75/2ecc71/comments.png' }} />
+                        <Text style={styles.BarLabel}>25</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </>
+        </View>
+      </>
+    );
 
-            )
 
-          }} />
+    return (
+
+      <View style={styles.container}>
+        {/* <Button title="all posts" onPress={()=>{console.log(this.state.allPosts)}}/> */}
+        <FlatList
+        style = {styles.list}
+          data={this.state.allPosts.Posts}
+          renderItem={renderItem}
+          keyExtractor={item => item.PostID}
+        />
 
       </View>
 

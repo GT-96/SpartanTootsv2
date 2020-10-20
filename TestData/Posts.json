@@ -1,15 +1,21 @@
 {
     "Posts": [
         {
-            "PostID": "1",
-            "UserID": "1",
+            "PostID": "0",
+            "UserID": "0",
             "DateTime": "2020-10-19T00:00:00",
             "PostDetails": {
                 "Title": "First POst",
                 "Description": "This is my first post hi guys",
-                "Course": "CS 157A"
+                "Course": "CS 157A",
+                "CourseImage": "https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A"
             },
             "Comments": [
+                {
+                    "CommentID": "0",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
                 {
                     "CommentID": "1",
                     "UserID": 1,
@@ -17,31 +23,32 @@
                 },
                 {
                     "CommentID": "2",
-                    "UserID": 1,
-                    "Comment": "Hi i like this post"
-                },
-                {
-                    "CommentID": "3",
                     "UserID": 1,
                     "Comment": "Hi i like this post"
                 }
             ],
-            "UserInteraction":{
-                "Likes":{},
-                "Comments":{},
-                "Shares":{}
+            "UserInteraction": {
+                "Likes": {},
+                "Comments": {},
+                "Shares": {}
             }
         },
         {
-            "PostID": "2",
-            "UserID": "2",
+            "PostID": "1",
+            "UserID": "1",
             "DateTime": "2020-10-19T00:00:00",
             "PostDetails": {
                 "Title": "First POst 2",
                 "Description": "This is the second post hi guys",
-                "Course": "CS 157A"
+                "Course": "CS 157A",
+                "CourseImage": "https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A"
             },
             "Comments": [
+                {
+                    "CommentID": "0",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
                 {
                     "CommentID": "1",
                     "UserID": 1,
@@ -51,13 +58,92 @@
                     "CommentID": "2",
                     "UserID": 1,
                     "Comment": "Hi i like this post"
+                }
+            ]
+        },
+        {
+            "PostID": "2",
+            "UserID": "1",
+            "DateTime": "2020-10-19T00:00:00",
+            "PostDetails": {
+                "Title": "First POst 3",
+                "Description": "This is the second post hi guys",
+                "Course": "CS 157A",
+                "CourseImage": "https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A"
+            },
+            "Comments": [
+                {
+                    "CommentID": "0",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
                 },
                 {
-                    "CommentID": "3",
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "2",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                }
+            ]
+        },
+        {
+            "PostID": "3",
+            "UserID": "1",
+            "DateTime": "2020-10-19T00:00:00",
+            "PostDetails": {
+                "Title": "First POst 4",
+                "Description": "This is the second post hi guys",
+                "Course": "CS 157A",
+                "CourseImage":"https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A"
+            },
+            "Comments": [
+                {
+                    "CommentID": "0",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "2",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                }
+            ]
+        },
+        {
+            "PostID": "4",
+            "UserID": "1",
+            "DateTime": "2020-10-19T00:00:00",
+            "PostDetails": {
+                "Title": "First POst 5",
+                "Description": "This is the second post hi guys",
+                "Course": "CS 157A",
+                "CourseImage":"https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A"
+            },
+            "Comments": [
+                {
+                    "CommentID": "0",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "1",
+                    "UserID": 1,
+                    "Comment": "Hi i like this post"
+                },
+                {
+                    "CommentID": "2",
                     "UserID": 1,
                     "Comment": "Hi i like this post"
                 }
             ]
         }
-]
+    ]
 }

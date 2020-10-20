@@ -23,7 +23,7 @@ const AuthStack = createStackNavigator();
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeHome} />
-    <HomeStack.Screen name="Post" component={PostScreen} />
+    <HomeStack.Screen name="PostScreen" component={PostScreen} />
   </HomeStack.Navigator>
 );
 
