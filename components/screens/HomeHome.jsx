@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,50 +8,58 @@ import {
   Alert,
   ScrollView,
   FlatList,
-  Button
-} from 'react-native';
+  Button,
+} from "react-native";
 
 export default class HomeHome extends Component {
-
   constructor(props) {
-    const allPosts = require('../../TestData/Posts.json');
+    const allPosts = require("../../TestData/Posts.json");
     // console.log(props);
     const navigation = props.navigation;
     super(props);
     this.state = {
       allPosts,
-      data: [
-        { id: 1, title: "CS157A Professor Recommendation", time: "08-01-20 12:15 pm", image: "https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A", description: "What was your experience with any 157a professor. Going to be taking it this fall and kind of nervous." },
-        { id: 2, title: "CS 149 Threads and Locks", time: "08-29-20 10:43 am", image: "https://via.placeholder.com/400x200/C188F6/FFFFFF/?text=CS149", description: "Any good youtube videos on threads and locks, had a hard time following in class" },
-        { id: 3, title: "CMPE 172 Springboot", time: "09-09-20 6:28  pm", image: "https://via.placeholder.com/400x200/88F6AE/FFFFFF/?text=CMPE172", description: "Have any of you used Spring Boot before? Need a little bit of help on my project" },
-        { id: 4, title: "CS 158B Raspberry Pi's", time: "09-17-20 1:17  am", image: "https://via.placeholder.com/400x200/F688BA/FFFFFF/?text=CS158B", description: "How have you configured your VM settings before booting your Pi's?" },
-        { id: 5, title: "CS157A Professor Recommendation", time: "09-01-20 11:15 am", image: "https://via.placeholder.com/400x200/DE836F/FFFFFF/?text=CS157A", description: "What was your experience with any 157a professor...." },
-      ]
+      // c
     };
   }
 
   render() {
-
+    console.log(this.props);
     const renderItem = ({ item }) => (
       <>
-      <View style={styles.separator} />
+        <View style={styles.separator} />
         <View>
-
           {/* <Button title = {item.PostID}/> */}
           <>
-            <TouchableOpacity onPress={() => { (this.props.navigation.navigate("PostScreen", { item })) }}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate("PostScreen", { item });
+              }}
+            >
               <View style={styles.card}>
                 <View testID="user Profile" style={styles.container}>
-                  <Image style ={styles.cardImage} source={{uri: 'https://i.imgur.com/FCfsJ0u.jpg'}}/>
+                  <Image
+                    style={styles.cardImage}
+                    source={{ uri: "https://i.imgur.com/FCfsJ0u.jpg" }}
+                  />
                   {/* User Profile Overview data like the name, number of upvotes and whatever else will go here */}
                 </View>
-                <Image style={styles.cardImage} source={{ uri: item.PostDetails.CourseImage }} />
+                <Image
+                  style={styles.cardImage}
+                  source={{ uri: item.PostDetails.CourseImage }}
+                />
                 <View style={styles.cardHeader}>
                   <View>
                     <Text style={styles.title}>{item.PostDetails.Title}</Text>
                     <Text style={styles.description}>{item.description}</Text>
                     <View style={styles.timeContainer}>
-                      <Image style={styles.iconData} source={{ uri: 'https://img.icons8.com/color/96/3498db/calendar.png' }} />
+                      <Image
+                        style={styles.iconData}
+                        source={{
+                          uri:
+                            "https://img.icons8.com/color/96/3498db/calendar.png",
+                        }}
+                      />
                       <Text style={styles.time}>{item.DateTime}</Text>
                     </View>
                   </View>
@@ -60,13 +68,25 @@ export default class HomeHome extends Component {
                   <View style={styles.BarContainer}>
                     <View style={styles.BarSection}>
                       <TouchableOpacity style={styles.BarButton}>
-                        <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/material/96/2ecc71/visible.png' }} />
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri:
+                              "https://img.icons8.com/material/96/2ecc71/visible.png",
+                          }}
+                        />
                         <Text style={styles.BarLabel}>78</Text>
                       </TouchableOpacity>
                     </View>
                     <View style={styles.BarSection}>
                       <TouchableOpacity style={styles.BarButton}>
-                        <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/ios-glyphs/75/2ecc71/comments.png' }} />
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri:
+                              "https://img.icons8.com/ios-glyphs/75/2ecc71/comments.png",
+                          }}
+                        />
                         <Text style={styles.BarLabel}>25</Text>
                       </TouchableOpacity>
                     </View>
@@ -79,25 +99,58 @@ export default class HomeHome extends Component {
       </>
     );
 
-
+    const createPostNavi=()=>{
+      const dummy =[1,2];
+      const homeState = this.state
+      // this.props.navigator.navigate("Create Post")
+      this.props.navigation.navigate("Create Post", homeState);
+      // console.log(this.props.navigate)
+    }
     return (
-
       <View style={styles.container}>
-        {/* <Button title="all posts" onPress={()=>{console.log(this.state.allPosts)}}/> */}
-        <FlatList
-        style = {styles.list}
-          data={this.state.allPosts.Posts}
-          renderItem={renderItem}
-          keyExtractor={item => item.PostID}
-        />
-
+        <View>
+          {/* <Button title="all posts" onPress={()=>{console.log(this.state.allPosts)}}/> */}
+          <FlatList
+            style={styles.list}
+            data={this.state.allPosts.Posts}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.PostID}
+          />
+        </View>
+        <View style={styles.plusIconContainer}>
+          <TouchableOpacity onPress={
+            ()=>createPostNavi()
+          }>
+            <Image
+            style={styles.plusIcon}
+            source={require("../images/PlusIcon.png")}/>
+          </TouchableOpacity>
+        </View>
       </View>
-
     );
   }
 }
 
 const styles = StyleSheet.create({
+  plusIcon:{
+    flex:1,
+    flexDirection:"row",
+    resizeMode:"contain",
+    // ...StyleSheet.absoluteFillObject,
+  },
+  plusIconContainer: {
+    justifyContent:"center",
+    alignItems:"center",
+    flex:1,
+    height:"10%",
+    width:"15%",
+    borderWidth: 1,
+    position: "absolute",
+    bottom: 0,
+    alignSelf: "center",
+    borderRadius:10,
+    borderColor:"transparent"
+  },
   container: {
     flex: 1,
     marginTop: 20,
@@ -111,30 +164,30 @@ const styles = StyleSheet.create({
   },
   //card
   card: {
-    shadowColor: '#00000021',
+    shadowColor: "#00000021",
     shadowOffset: {
-      width: 2
+      width: 2,
     },
     shadowOpacity: 0.5,
     shadowRadius: 4,
     marginVertical: 8,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   cardHeader: {
     paddingVertical: 17,
     paddingHorizontal: 16,
     borderTopLeftRadius: 1,
     borderTopRightRadius: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   cardContent: {
     paddingVertical: 12.5,
     paddingHorizontal: 16,
   },
   cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingTop: 12.5,
     paddingBottom: 25,
     paddingHorizontal: 16,
@@ -147,7 +200,7 @@ const styles = StyleSheet.create({
     height: 150,
     width: null,
   },
-  // details 
+  // details
   title: {
     fontSize: 18,
     flex: 1,
@@ -162,7 +215,7 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 13,
     color: "#808080",
-    marginTop: 5
+    marginTop: 5,
   },
   icon: {
     width: 25,
@@ -172,31 +225,31 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
     marginTop: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   timeContainer: {
-    flexDirection: 'row'
+    flexDirection: "row",
   },
   //bar
   BarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flex: 1
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 1,
   },
   BarSection: {
-    justifyContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "center",
+    flexDirection: "row",
     flex: 1,
   },
   Barlabel: {
     marginLeft: 8,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
+    alignSelf: "flex-end",
+    justifyContent: "center",
   },
   BarButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

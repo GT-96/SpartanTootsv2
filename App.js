@@ -15,6 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 //import Ionicons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "./components/screens/AuthCon";
 import PostScreen from "./components/screens/PostScreen";
+import CreatePost from "./components/screens/CreatePost"
 
 const HomeStack = createStackNavigator();
 const SettingStack = createStackNavigator();
@@ -24,6 +25,7 @@ const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeHome} />
     <HomeStack.Screen name="PostScreen" component={PostScreen} />
+    <HomeStack.Screen name = "Create Post" component = {CreatePost}/>
   </HomeStack.Navigator>
 );
 
