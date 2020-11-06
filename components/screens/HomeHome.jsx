@@ -24,6 +24,7 @@ export default class HomeHome extends Component {
   }
 
   render() {
+    console.log("this is homehome");
     console.log(this.props);
     const renderItem = ({ item }) => (
       <>

@@ -13,30 +13,38 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AuthContext } from "./AuthCon";
 import firebase from "../firebase/Firebase";
 import { auth } from "firebase";
+import react from "react";
 
-export default function LogIn({ navigation }) {
-  const { signIn } = React.useContext(AuthContext);
+export default function SignUp({ navigation }) {
+  //const { signIn } = React.useContext(AuthContext);
 
+  //this is to set up and get the input out of textInput and store it
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  //for account creation
+  const [newAccount, setNameAccount] = React.useState(true);
+
+  //error handeling
   const [error , setError] = React.useState("");
-  
-  //firebase authentication
+
+  //firebase authentication var
   const authService = firebase.auth();
 
-  console.log(authService.currentUser);
-  //console.log(username);
+
+
+  //console.log(authService.currentUser);
+  //console.log(password.pass);
 
   // const user1 = "saoud";
   // const pass1 = "123abc";
-
 
   return (
     <View
       style={{
         marginTop: 90,
         flex: 1,
-        
+
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#567FED",
@@ -62,18 +70,24 @@ export default function LogIn({ navigation }) {
 
       <TouchableOpacity
         style={styles.buttonContainer}
-        
         onPress={async () => {
-          console.log(authService.currentUser);
+          //console.log(username.user);
           try {
               let data;
-
+            if (newAccount) {
+              //create account
+              //signIn();
+               data = await authService.createUserWithEmailAndPassword(
+                username.user,
+                password.pass
+              );
+            } else {
               //log in
                data = await authService.signInWithEmailAndPassword(
                 username.user,
                 password.pass
               );
-            
+            }
             console.log(data);
           } catch (error) {
             setError(error.message);
@@ -81,22 +95,9 @@ export default function LogIn({ navigation }) {
           }
         }}
       >
-        <Text style={styles.buttonText}> LOGIN</Text>
+        <Text style={styles.buttonText}> CREATE</Text>
       </TouchableOpacity>
-
-      {/* <TouchableOpacity
-      
-        style={styles.buttonContainer}
-        onPress={ async() => {
-          var provider = new firebase.auth.GoogleAuthProvider();
-          const data= await authService.signInWithPopup(provider);
-          console.log(data);
-        }}
-      >
-        <Text style={styles.buttonText}> Google Login</Text>
-      </TouchableOpacity> */}
-      <Text style={styles.plaintxt}> Forgot Password?</Text>
-      <Text> {error}</Text>
+      <Text>{error}</Text>
     </View>
   );
 }

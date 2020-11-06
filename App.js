@@ -9,13 +9,19 @@ import HomeHome from "./components/screens/HomeHome";
 import Settings from "./components/screens/Settings";
 import Tutors from "./components/screens/Tutors";
 import Chat from "./components/screens/Chat";
-
+import SignUp from "./components/screens/SignUp";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 //import Ionicons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "./components/screens/AuthCon";
 import PostScreen from "./components/screens/PostScreen";
 import CreatePost from "./components/screens/CreatePost"
+//import firebase from './components/firebase/Firebase';
+import firebase from "./components/firebase/Firebase";
+import { authService } from "./components/firebase/Firebase";
+
+//console.log(firebase);
+//console.log(firebase.auth().currentUser);
 
 const HomeStack = createStackNavigator();
 const SettingStack = createStackNavigator();
@@ -24,6 +30,7 @@ const AuthStack = createStackNavigator();
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeHome} />
+    
     <HomeStack.Screen name="PostScreen" component={PostScreen} />
     <HomeStack.Screen name = "Create Post" component = {CreatePost}/>
   </HomeStack.Navigator>
@@ -32,6 +39,7 @@ const HomeStackScreen = () => (
 const SettingStackScreen = () => (
   <SettingStack.Navigator>
     <SettingStack.Screen name="Settings" component={Settings} />
+    <SettingStack.Screen name="HomeScreen" component={HomeScreen} />
   </SettingStack.Navigator>
 );
 
@@ -49,10 +57,15 @@ const ChatStackScreen = () => (
 //=====================
 const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+function MyTabs(props) {
+
+  console.log("mytabbs");
+  console.log(props);
+  console.log(authService.currentUser);
+
   return (
     <Tab.Navigator
-    initialRouteName = "Home"
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -106,10 +119,27 @@ export default function App() {
     };
   }, []);
 
+  //this is for initilize the user and navigates them.
+  const [init, setInit] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  // React.useEffect(() => {
+  //   authService.onAuthStateChanged((user)=> console.log(user));
+  //   return () => {
+
+  //   }
+  // }, [])
   React.useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
+    authService.onAuthStateChanged((user) => {
+      if(user){
+        setIsLoggedIn(true);
+      }else{
+        setIsLoading(false);
+      }
+      setInit(true);
+    });
   }, []);
 
   if (isLoading) {
@@ -119,12 +149,16 @@ export default function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {userToken ? (
-          <MyTabs />
+        {userToken || isLoggedIn ? (
+          <MyTabs 
+          log = {isLoggedIn}
+          setLog = {setIsLoggedIn}
+          />
         ) : (
           <AuthStack.Navigator initialRouteName="HomeScreen">
             <AuthStack.Screen name="Home" component={HomeScreen} />
             <AuthStack.Screen name="Log in" component={LogIn} />
+            <AuthStack.Screen name="Sign up" component={SignUp} />
           </AuthStack.Navigator>
         )}
       </NavigationContainer>
