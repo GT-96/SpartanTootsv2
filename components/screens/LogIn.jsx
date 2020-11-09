@@ -23,8 +23,8 @@ export default function LogIn({ navigation }) {
   
   //firebase authentication
   const authService = firebase.auth();
-
-  console.log(authService.currentUser);
+  
+  // console.log(authService.currentUser);
   //console.log(username);
 
   // const user1 = "saoud";

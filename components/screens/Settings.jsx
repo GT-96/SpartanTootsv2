@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, View, StyleSheet, Alert, ScrollView } from "react-native";
 import SettingsList from "react-native-settings-list";
 import { Avatar } from "react-native-paper";
@@ -10,22 +10,31 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 //import Component from 'react';
 
-class Settings extends React.Component {
+// class Settings extends React.Component {
   
-  constructor(props) {
+//   constructor(props) {
     
-   //console.log(authService.currentUser);
+//    //console.log(authService.currentUser);
 
-    super(props);
-    this.onValueChange = this.onValueChange.bind(this);
-    this.state = {
-      switchValue: false,
-    };
-  }
-  
-  render() {
-    console.log("this is settings");
-    console.log(this.props);
+//     super(props);
+//     this.onValueChange = this.onValueChange.bind(this);
+//     this.state = {
+//       switchValue: false,
+//     };
+//   }
+// function onValueChange(value) {
+//   this.setState({ switchValue: value });
+// } 
+//   render() {
+  export default function Settings({log, setLog}){
+
+    const[tutorMode, setTutorMode]= useState(false);
+    const[pushNotifications, setPushNotifications]= useState(false);
+
+
+    // console.log("this is settings");
+    // console.log(log);
+    // console.log(setLog);
     return (
       <ScrollView>
         <View style={{ flex: 1 }}>
@@ -59,16 +68,18 @@ class Settings extends React.Component {
 
               <SettingsList.Item
                 hasSwitch={true}
-                switchState={this.state.switchValue}
-                switchOnValueChange={this.onValueChange}
+                switchState={tutorMode}
+                switchOnValueChange={()=>{
+                  setTutorMode(!tutorMode);
+                }}
                 hasNavArrow={false}
                 title="Tutor Mode"
               />
 
               <SettingsList.Item
                 hasSwitch={true}
-                switchState={this.state.switchValue}
-                switchOnValueChange={this.onValueChange}
+                switchState={pushNotifications}
+                switchOnValueChange={()=>{setPushNotifications(!pushNotifications)}}
                 hasNavArrow={false}
                 title="Push Notifications"
               />
@@ -89,8 +100,24 @@ class Settings extends React.Component {
                 // ],{cancelable: false}
                 // )}
                 onPress={() => {
-                  authService.signOut();
-                  console.log(authService.currentUser);
+                  Alert.alert(
+                    "Are you sure?",
+                    "Logging out will require you to reenter your credentials.",
+                    [
+                      {
+                        text: "Logout",
+                        style: "destructive",
+                        onPress: () => {
+                          authService.signOut();
+                          setLog(!log);
+                          console.log(authService.currentUser);
+                        },
+                      },
+                      { text: "Cancel" },
+                    ],
+                    { cancelable: false }
+                  );
+
                   //console.log(authService.currentUser);
                   //navigation.navigate('Log in');
                  // this.props.navigation.navigate('HomeScreen');
@@ -103,10 +130,11 @@ class Settings extends React.Component {
       </ScrollView>
     );
   }
-  onValueChange(value) {
-    this.setState({ switchValue: value });
-  }
-}
+
+
+  
+
+
 
 const styles = StyleSheet.create({
   imageStyle: {
@@ -127,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+// export default Settings;

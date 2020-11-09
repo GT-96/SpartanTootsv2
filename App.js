@@ -15,7 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 //import Ionicons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "./components/screens/AuthCon";
 import PostScreen from "./components/screens/PostScreen";
-import CreatePost from "./components/screens/CreatePost"
+import CreatePost from "./components/screens/CreatePost";
 //import firebase from './components/firebase/Firebase';
 import firebase from "./components/firebase/Firebase";
 import { authService } from "./components/firebase/Firebase";
@@ -30,18 +30,28 @@ const AuthStack = createStackNavigator();
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeHome} />
-    
+
     <HomeStack.Screen name="PostScreen" component={PostScreen} />
-    <HomeStack.Screen name = "Create Post" component = {CreatePost}/>
+    <HomeStack.Screen name="Create Post" component={CreatePost} />
   </HomeStack.Navigator>
 );
 
-const SettingStackScreen = () => (
-  <SettingStack.Navigator>
-    <SettingStack.Screen name="Settings" component={Settings} />
-    <SettingStack.Screen name="HomeScreen" component={HomeScreen} />
-  </SettingStack.Navigator>
-);
+const SettingStackScreen = ({ log, setLog }) => {
+  console.log("this is in SettingStackScreen");
+  console.log(log);
+  console.log(setLog);
+  return (
+    <>
+      <SettingStack.Navigator>
+        {/* <SettingStack.Screen name="Settings" component={Settings} /> */}
+        <SettingStack.Screen name="Settings">
+          {(idk) => <Settings log={log} setLog={setLog} />}
+        </SettingStack.Screen>
+        <SettingStack.Screen name="HomeScreen" component={HomeScreen} />
+      </SettingStack.Navigator>
+    </>
+  );
+};
 
 const TutorsStackScreen = () => (
   <SettingStack.Navigator>
@@ -58,10 +68,10 @@ const ChatStackScreen = () => (
 const Tab = createBottomTabNavigator();
 
 function MyTabs(props) {
-
-  console.log("mytabbs");
-  console.log(props);
-  console.log(authService.currentUser);
+  //Shows props and whos authenticated
+  // console.log("mytabbs");
+  // console.log(props);
+  // console.log(authService.currentUser);
 
   return (
     <Tab.Navigator
@@ -89,7 +99,12 @@ function MyTabs(props) {
         inactiveTintColor: "gray",
       }}
     >
-      <Tab.Screen name="Settings" component={SettingStackScreen} />
+      {/* <Tab.Screen name="Settings" component={SettingStackScreen}/> */}
+      <Tab.Screen name="Settings">
+        {/* this is how to pass props to a screen */}
+        {(idk) => <SettingStackScreen log={props.log} setLog={props.setLog} />}
+        {/* {props=> <SettingStackScreen {...props}/>} */}
+      </Tab.Screen>
       <Tab.Screen name="Chat" component={ChatStackScreen} />
       <Tab.Screen name="Tutors" component={TutorsStackScreen} />
       <Tab.Screen name="Home" component={HomeStackScreen} />
@@ -133,9 +148,9 @@ export default function App() {
       setIsLoading(false);
     }, 1000);
     authService.onAuthStateChanged((user) => {
-      if(user){
+      if (user) {
         setIsLoggedIn(true);
-      }else{
+      } else {
         setIsLoading(false);
       }
       setInit(true);
@@ -150,10 +165,7 @@ export default function App() {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {userToken || isLoggedIn ? (
-          <MyTabs 
-          log = {isLoggedIn}
-          setLog = {setIsLoggedIn}
-          />
+          <MyTabs log={isLoggedIn} setLog={setIsLoggedIn} />
         ) : (
           <AuthStack.Navigator initialRouteName="HomeScreen">
             <AuthStack.Screen name="Home" component={HomeScreen} />

@@ -40,6 +40,7 @@ export default function CreatePost(props) {
     Post: "",
     Username: "",
     UserID: "",
+    PostID: ""
   };
 
   const [textState, dispatchText] = useReducer(
@@ -49,7 +50,8 @@ export default function CreatePost(props) {
 
   const { Title, Course, Post, Username, UserID } = textState;
 
-//   console.log(props);
+//    console.log("this is in Create POst");
+//    console.log(props);
   return (
     <View>
       <>
@@ -78,9 +80,15 @@ export default function CreatePost(props) {
           }
         />
       </>
-      <Button title="show props" onPress={()=> console.log(props)}/>
-      <Button title="show textState" onPress={()=> console.log(textState)}/>
-      <Button title = "submit" onPress={()=>{}}/>
+      <Button
+        title="show props"
+        onPress={() => {
+          console.log("this is in createPost");
+          console.log(props);
+        }}
+      />
+      <Button title="show textState" onPress={() => console.log(textState)} />
+      <Button title="submit" onPress={() => {}} />
     </View>
   );
 }
