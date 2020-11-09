@@ -41,7 +41,7 @@ export default class HomeHome extends Component {
                 <View testID="user Profile" style={styles.container}>
                   <Image
                     style={styles.cardImage}
-                    source={{ uri: "https://i.imgur.com/FCfsJ0u.jpg" }}
+                    source={{ uri: "https://i.imgur.com/DzujRVN.jpg" }}
                   />
                   {/* User Profile Overview data like the name, number of upvotes and whatever else will go here */}
                 </View>
