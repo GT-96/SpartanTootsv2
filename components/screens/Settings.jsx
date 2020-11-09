@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image, View, StyleSheet, Alert, ScrollView } from "react-native";
+import { Image, View, StyleSheet, Alert, ScrollView, TouchableOpacity } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 import SettingsList from "react-native-settings-list";
 import { Avatar } from "react-native-paper";
 import { authService } from "../firebase/Firebase";
@@ -31,19 +32,36 @@ import { createStackNavigator } from '@react-navigation/stack';
     const[tutorMode, setTutorMode]= useState(false);
     const[pushNotifications, setPushNotifications]= useState(false);
 
+    pickImage = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log(result);
+
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
+    };
 
     // console.log("this is settings");
     // console.log(log);
     // console.log(setLog);
     return (
+
       <ScrollView>
         <View style={{ flex: 1 }}>
           <View style={{ backgroundColor: "#EFEFF4" }}>
+          <TouchableOpacity onPress={pickImage}>
             <Avatar.Image
               style={styles.iconData}
               size={240}
               source={require("../images/prof.png")}
             />
+            </TouchableOpacity>
 
             <SettingsList borderColor="#c8c7cc" defaultItemSize={60}>
               <SettingsList.Header headerStyle={{ marginTop: 20 }} />
@@ -123,6 +141,7 @@ import { createStackNavigator } from '@react-navigation/stack';
                  // this.props.navigation.navigate('HomeScreen');
                   //AuthContext.signOut();
                 }}
+
               />
             </SettingsList>
           </View>
