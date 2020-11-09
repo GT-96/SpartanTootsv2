@@ -1,21 +1,22 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useReducer } from "react";
 import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity,
-    Image,
-    Alert,
-    ScrollView,
-    FlatList,
-    Button,
-  } from "react-native";
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+  FlatList,
+  Button,
+} from "react-native";
 import { NavigationContainer, StackActions } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { color } from "react-native-reanimated";
 import { TextInput } from "react-native-paper";
 import InputField from "./InputField";
+import firebase from "../firebase/Firebase";
 
 const textInputReducer = (state, action) => {
   switch (action.textToChange) {
@@ -30,17 +31,16 @@ const textInputReducer = (state, action) => {
   }
 };
 
-const submitPost = ()=>{
-
-}
+const submitPost = () => {};
 export default function CreatePost(props) {
+  const dbService = firebase.firestore();
   const initialTextInputStates = {
     Title: "",
     Course: "",
     Post: "",
     Username: "",
     UserID: "",
-    PostID: ""
+    PostID: "",
   };
 
   const [textState, dispatchText] = useReducer(
@@ -50,8 +50,8 @@ export default function CreatePost(props) {
 
   const { Title, Course, Post, Username, UserID } = textState;
 
-//    console.log("this is in Create POst");
-//    console.log(props);
+  //    console.log("this is in Create POst");
+  //    console.log(props);
   return (
     <View>
       <>
@@ -87,12 +87,21 @@ export default function CreatePost(props) {
           console.log(props);
         }}
       />
-      <Button title="show textState" onPress={() => console.log(textState)} />
+
+      <Button
+        title="show textState"
+        onPress={async() => {
+          await dbService.collection("feeds").add({ textState, createdAt: Date.now() }),
+            //console.log(textState),
+            //console.log(dbService)
+            console.log("TEST DATABASE");
+        }}
+      />
       <Button title="submit" onPress={() => {}} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    input: { height: 40, borderColor: "gray", borderWidth: 1 }
-})
+  input: { height: 40, borderColor: "gray", borderWidth: 1 },
+});
