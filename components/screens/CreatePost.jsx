@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -34,6 +34,7 @@ const textInputReducer = (state, action) => {
 const submitPost = () => {};
 export default function CreatePost(props) {
   const dbService = firebase.firestore();
+  const fbCurrentUser = firebase.auth().currentUser.uid;
   const initialTextInputStates = {
     Title: "",
     Course: "",
@@ -50,8 +51,24 @@ export default function CreatePost(props) {
 
   const { Title, Course, Post, Username, UserID } = textState;
 
+  const [feeds, setFeeds] = useState([]);
+  const getFeeds = async () => {
+    const dbFeeds = await dbService.collection("feeds").get();
+    dbFeeds.forEach((document) => {
+      const feedObject = {
+        ...document.data(),
+        id: document.id,
+      };
+      setFeeds((prev) => [feedObject, ...prev]);
+    });
+  };
+  React.useEffect(() => {
+    getFeeds();
+  }, []);
+  //console.log(feeds);
   //    console.log("this is in Create POst");
   //    console.log(props);
+
   return (
     <View>
       <>
@@ -90,14 +107,18 @@ export default function CreatePost(props) {
 
       <Button
         title="show textState"
-        onPress={async() => {
-          await dbService.collection("feeds").add({ textState, createdAt: Date.now() }),
-            //console.log(textState),
-            //console.log(dbService)
+        onPress={async () => {
+          await dbService
+            .collection("feeds")
+            .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser }),
+           console.log(feeds.map( (item) => item)),
+            //console.log(fbCurrentUser);
             console.log("TEST DATABASE");
         }}
       />
       <Button title="submit" onPress={() => {}} />
+        
+      <Text>{}</Text>
     </View>
   );
 }

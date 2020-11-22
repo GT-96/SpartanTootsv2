@@ -27,12 +27,12 @@ const HomeStack = createStackNavigator();
 const SettingStack = createStackNavigator();
 const AuthStack = createStackNavigator();
 
-const HomeStackScreen = () => (
+const HomeStackScreen = ({userObject}) => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeHome} />
 
     <HomeStack.Screen name="PostScreen" component={PostScreen} />
-    <HomeStack.Screen name="Create Post" component={CreatePost} />
+    <HomeStack.Screen name="Create Post" component={CreatePost} userObject={userObject} />
   </HomeStack.Navigator>
 );
 
@@ -117,6 +117,7 @@ export default function App() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
 
+
   const authContext = React.useMemo(() => {
     return {
       signIn: () => {
@@ -137,6 +138,8 @@ export default function App() {
   //this is for initilize the user and navigates them.
   const [init, setInit] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    //firebase user
+    const [userObject, setUserObject] = React.useState(null);
   // React.useEffect(() => {
   //   authService.onAuthStateChanged((user)=> console.log(user));
   //   return () => {
@@ -150,6 +153,7 @@ export default function App() {
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
+        setUserObject(user);
       } else {
         setIsLoading(false);
       }
@@ -165,7 +169,7 @@ export default function App() {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {userToken || isLoggedIn ? (
-          <MyTabs log={isLoggedIn} setLog={setIsLoggedIn} />
+          <MyTabs log={isLoggedIn} setLog={setIsLoggedIn} userObj={userObject} />
         ) : (
           <AuthStack.Navigator initialRouteName="HomeScreen">
             <AuthStack.Screen name="Home" component={HomeScreen} />
