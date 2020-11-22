@@ -11,21 +11,25 @@ import {
   Button,
 } from "react-native";
 
-export default class HomeHome extends Component {
-  constructor(props) {
-    const allPosts = require("../../TestData/Posts.json");
-    // console.log(props);
-    const navigation = props.navigation;
-    super(props);
-    this.state = {
-      allPosts,
-      // c
-    };
-  }
+// export default class HomeHome extends Component {
+//   constructor(props) {
+//     const allPosts = require("../../TestData/Posts.json");
+//     // console.log(props);
+//     const navigation = props.navigation;
+//     super(props);
+//     this.state = {
+//       allPosts,
+//       // c
+//     };
+//   }
 
-  render() {
+//   render() {
+  export default function HomeHome(props){
+    const initPosts = require("../../TestData/Posts.json");
+    const navigation = props.navigation;
+    const [allPosts, setPosts]= useState(initPosts);
     console.log("this is homehome");
-    console.log(this.props);
+    console.log(props);
     const renderItem = ({ item }) => (
       <>
         <View style={styles.separator} />
@@ -34,7 +38,7 @@ export default class HomeHome extends Component {
           <>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate("PostScreen", { item });
+                props.navigation.navigate("PostScreen", { item });
               }}
             >
               <View style={styles.card}>
@@ -102,9 +106,9 @@ export default class HomeHome extends Component {
 
     const createPostNavi=()=>{
       const dummy =[1,2];
-      const homeState = this.state
+      // const homeState = this.state
       // this.props.navigator.navigate("Create Post")
-      this.props.navigation.navigate("Create Post", homeState);
+      props.navigation.navigate("Create Post", allPosts);
       // console.log(this.props.navigate)
     }
     return (
@@ -113,7 +117,7 @@ export default class HomeHome extends Component {
           {/* <Button title="all posts" onPress={()=>{console.log(this.state.allPosts)}}/> */}
           <FlatList
             style={styles.list}
-            data={this.state.allPosts.Posts}
+            data={allPosts.Posts}
             renderItem={renderItem}
             keyExtractor={(item) => item.PostID}
           />
@@ -130,7 +134,7 @@ export default class HomeHome extends Component {
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   plusIcon:{
