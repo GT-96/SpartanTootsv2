@@ -19,7 +19,7 @@ export default function HomeScreen({ navigation }) {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#567FED",
+        backgroundColor: "#3F51B5",
       }}
     >
       <Image style={styles.logo} source={require("../images/ST.png")} />
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 
   buttonText: {
     textAlign: "center",
-    color: "#567FED",
+    color: "#3F51B5",
     fontWeight: "900",
   },
 });
