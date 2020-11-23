@@ -51,20 +51,20 @@ export default function CreatePost(props) {
 
   const { Title, Course, Post, Username, UserID } = textState;
 
-  const [feeds, setFeeds] = useState([]);
-  const getFeeds = async () => {
-    const dbFeeds = await dbService.collection("feeds").get();
-    dbFeeds.forEach((document) => {
-      const feedObject = {
-        ...document.data(),
-        id: document.id,
-      };
-      setFeeds((prev) => [feedObject, ...prev]);
-    });
-  };
-  React.useEffect(() => {
-    getFeeds();
-  }, []);
+  // const [feeds, setFeeds] = useState([]);
+  // const getFeeds = async () => {
+  //   const dbFeeds = await dbService.collection("feeds").get();
+  //   dbFeeds.forEach((document) => {
+  //     const feedObject = {
+  //       ...document.data(),
+  //       id: document.id,
+  //     };
+  //     setFeeds((prev) => [feedObject, ...prev]);
+  //   });
+  // };
+  // React.useEffect(() => {
+  //   getFeeds();
+  // }, []);
   //console.log(feeds);
   //    console.log("this is in Create POst");
   //    console.log(props);
@@ -110,10 +110,10 @@ export default function CreatePost(props) {
         onPress={async () => {
           await dbService
             .collection("feeds")
-            .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser }),
-           console.log(feeds.map( (item) => item)),
+            .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser, }),
+           //console.log(feeds),
             //console.log(fbCurrentUser);
-            console.log("TEST DATABASE");
+            console.log("TESTsss DATABASE");
         }}
       />
       <Button title="submit" onPress={() => {}} />

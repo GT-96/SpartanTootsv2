@@ -19,6 +19,8 @@ import CreatePost from "./components/screens/CreatePost";
 //import firebase from './components/firebase/Firebase';
 import firebase from "./components/firebase/Firebase";
 import { authService } from "./components/firebase/Firebase";
+import 'react-native-get-random-values'
+
 
 //console.log(firebase);
 //console.log(firebase.auth().currentUser);
