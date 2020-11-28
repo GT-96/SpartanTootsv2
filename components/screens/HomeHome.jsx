@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 17,
-    backgroundColor: "#ffe4c4",
+    backgroundColor: "#C5CAE9",
   },
   separator: {
     marginTop: 10,
