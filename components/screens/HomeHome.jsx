@@ -26,13 +26,15 @@ import Feedpost from "./Feedpost";
 
 //   render() {
 export default function HomeHome(props) {
-  const initPosts = require("../../TestData/Posts.json");
+  // const initPosts = require("../../TestData/Posts.json");
   const navigation = props.navigation;
 
   const dbService = firebase.firestore();
   const fbCurrentUser = firebase.auth().currentUser.uid;
 
-  const [allPosts, setPosts] = useState(initPosts);
+  const [allPosts, setPosts] = useState([]);
+  const [isPostOwner, setPostOwner] = useState(false);
+
   console.log("this is homehome");
   //console.log(props);
 
@@ -52,11 +54,13 @@ export default function HomeHome(props) {
   // we can now use it to build group chat or comments for eahc post
   React.useEffect(() => {
     //getFeeds();
-    dbService.collection("feeds").onSnapshot(snapshot => {
-      
-      const feedArray = snapshot.docs.map(doc =>({id: doc.id, ...doc.data()}))
+    dbService.collection("feeds").onSnapshot((snapshot) => {
+      const feedArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setFeeds(feedArray);
-    })
+    });
   }, []);
   console.log("FEEEEDS");
   console.log(fbCurrentUser);
@@ -65,9 +69,19 @@ export default function HomeHome(props) {
 
   function renderCategories() {
     return feeds.map((item, index) => <Text key={index}>{item}</Text>);
-}
+  }
+  // const checkPostOwner = (item) => {
+  //   if (item.postedBy === fbCurrentUser) {
+  //     setPostOwner(true);
+  //   }
+  // };
   const renderItem = ({ item }) => (
+    // isPostOwner={feed.postedBy === fbCurrentUser}
+
     <>
+      {console.log("this is item in render item")}
+      {console.log(item)}
+
       <View style={styles.separator} />
       <View>
         {/* <Button title = {item.PostID}/> */}
@@ -128,20 +142,46 @@ export default function HomeHome(props) {
                       <Text style={styles.BarLabel}>25</Text>
                     </TouchableOpacity>
                   </View>
+                  <View style={styles.BarSection}>
+                    <TouchableOpacity>
+                      {item.postedBy === fbCurrentUser && (
+                        <>
+                          <View >
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await dbService
+                                  .doc(`feeds/${item.id}`)
+                                  .delete();
+                              }}
+                            >
+                              <Text style={styles.DeleteButton} > Delete </Text>
+                            </TouchableOpacity>
+                          </View>
+                          <View style={styles.PostOwnerStyles}>
+                            <TouchableOpacity
+                              
+                              onPress={() => {
+                                eventEditing();
+                                //console.log(edit);
+                              }}
+                            >
+                              <Text style={styles.EditButton}> Edit</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
           </TouchableOpacity>
         </>
-        
       </View>
-            
     </>
-    
   );
 
   const createPostNavi = () => {
-    const dummy = [1, 2];
     // const homeState = this.state
     // this.props.navigator.navigate("Create Post")
     props.navigation.navigate("Create Post", allPosts);
@@ -150,8 +190,17 @@ export default function HomeHome(props) {
   return (
     <View style={styles.container}>
       <View>
-      <Text>{feeds.map((feed)=>{return (<Feedpost key={feed.id} feedOject={feed} isPostOwner={feed.postedBy === fbCurrentUser}/>)})} </Text> 
-
+        {/* <Text>
+          {feeds.map((feed) => {
+            return (
+              <Feedpost
+                key={feed.id}
+                feedOject={feed}
+                isPostOwner={feed.postedBy === fbCurrentUser}
+              />
+            );
+          })}{" "}
+        </Text> */}
 
         {/* <Button title="all posts" onPress={()=>{console.log(this.state.allPosts)}}/> */}
         <FlatList
@@ -160,7 +209,6 @@ export default function HomeHome(props) {
           renderItem={renderItem}
           keyExtractor={(feed) => feed.id}
         />
-         
       </View>
       <View style={styles.plusIconContainer}>
         <TouchableOpacity onPress={() => createPostNavi()}>
@@ -170,7 +218,6 @@ export default function HomeHome(props) {
           />
         </TouchableOpacity>
       </View>
-      
     </View>
   );
 }
@@ -295,5 +342,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+  },
+  DeleteButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    fontStyle: "normal",
+    fontSize: 15,
+    fontWeight: "bold",
+    color: '#800000'
+  },
+  EditButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    fontStyle: "normal",
+    fontSize: 15,
+    fontWeight: "bold",
+    color: '#bdbd00'
   },
 });

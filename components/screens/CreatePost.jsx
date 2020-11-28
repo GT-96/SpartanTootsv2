@@ -31,10 +31,20 @@ const textInputReducer = (state, action) => {
   }
 };
 
-const submitPost = () => {};
-export default function CreatePost(props) {
+ const submitPost =  async (props, textState) => {
   const dbService = firebase.firestore();
   const fbCurrentUser = firebase.auth().currentUser.uid;
+    await dbService
+      .collection("feeds")
+      .add({textState, createdAt: Date.now(), postedBy: fbCurrentUser }),
+      //console.log(feeds),
+      //console.log(fbCurrentUser);
+      console.log("TESTsss DATABASE");
+  props.navigation.navigate("Home");
+
+};
+export default function CreatePost(props) {
+
   const initialTextInputStates = {
     Title: "",
     Course: "",
@@ -105,19 +115,21 @@ export default function CreatePost(props) {
         }}
       />
 
-      <Button
+      {/* <Button
         title="show textState"
         onPress={async () => {
           await dbService
             .collection("feeds")
-            .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser, }),
-           //console.log(feeds),
+            .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser }),
+            //console.log(feeds),
             //console.log(fbCurrentUser);
             console.log("TESTsss DATABASE");
         }}
-      />
-      <Button title="submit" onPress={() => {}} />
-        
+      /> */}
+      <Button title="submit" onPress={() => {
+        submitPost(props, textState);
+      }} />
+
       <Text>{}</Text>
     </View>
   );
