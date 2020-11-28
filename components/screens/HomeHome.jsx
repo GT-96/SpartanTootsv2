@@ -85,13 +85,10 @@ export default function HomeHome(props) {
                 />
                 {/* User Profile Overview data like the name, number of upvotes and whatever else will go here */}
               </View>
-              <Image
-                style={styles.cardImage}
-                source={{ uri: item.PostDetails.CourseImage }}
-              />
+
               <View style={styles.cardHeader}>
                 <View>
-                  <Text style={styles.title}>{item.PostDetails.Title}</Text>
+                  <Text style={styles.title}>{item.textState.Title}</Text>
                   <Text style={styles.description}>{item.description}</Text>
                   <View style={styles.timeContainer}>
                     <Image
@@ -101,7 +98,7 @@ export default function HomeHome(props) {
                           "https://img.icons8.com/color/96/3498db/calendar.png",
                       }}
                     />
-                    <Text style={styles.time}>{item.DateTime}</Text>
+                    <Text style={styles.time}>{Date(item.createdAt)}</Text>
                   </View>
                 </View>
               </View>
@@ -159,9 +156,9 @@ export default function HomeHome(props) {
         {/* <Button title="all posts" onPress={()=>{console.log(this.state.allPosts)}}/> */}
         <FlatList
           style={styles.list}
-          data={allPosts.Posts}
+          data={feeds}
           renderItem={renderItem}
-          keyExtractor={(item) => item.PostID}
+          keyExtractor={(feed) => feed.id}
         />
          
       </View>
@@ -244,7 +241,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     flex: 1,
-    height: 150,
+    height: 50,
     width: null,
   },
   // details

@@ -12,6 +12,7 @@ import SettingsList from "react-native-settings-list";
 import { Avatar } from "react-native-paper";
 import { authService } from "../firebase/Firebase";
 import { storageService } from "../firebase/Firebase";
+import firebase from "../firebase/Firebase";
 
 //import { v4 as uuidv4 } from "uuid";
 //import 'react-native-get-random-values'
@@ -38,11 +39,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 // }
 //   render() {
 export default function Settings({ log, setLog }) {
-  const [tutorMode, setTutorMode] = useState(false);
+  const [tutorMode, setTutorMode] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
   const [myImage, setMyImage] = React.useState();
   const fbCurrentUser = authService.currentUser.uid;
+  const dbService = firebase.firestore();
   //const { v4: uuidv4 } = require('uuid');
+  
+
+
 
   uriToBlob = (uri) => {
     return new Promise((resolve, reject) => {
@@ -142,6 +147,15 @@ export default function Settings({ log, setLog }) {
   // console.log(log);
   //console.log("myImage");
   //console.log(myImage);
+  console.log(tutorMode);
+
+   const modeChange = ()=>{
+    setTutorMode(!tutorMode);
+     dbService
+    .collection("tutors").doc(`${fbCurrentUser}`)
+    .set({tutorMode: tutorMode  })
+    
+  }; 
   return (
     <ScrollView>
       <View style={{ flex: 1 }}>
@@ -179,10 +193,19 @@ export default function Settings({ log, setLog }) {
             <SettingsList.Item
               hasSwitch={true}
               switchState={tutorMode}
-              switchOnValueChange={() => {
-                setTutorMode(!tutorMode);
-              }}
+              // switchOnValueChange={() => {
+              //   setTutorMode(!tutorMode);
+              // }}
+              // switchOnValueChange={ () => {
+              //    dbService
+              //     .collection("tutorMode")
+              //     .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser, })},
+              //     setTutorMode(!tutorMode)
+              //   }
+              //modeChange
+              switchOnValueChange={modeChange}
               hasNavArrow={false}
+              
               title="Tutor Mode"
             />
 

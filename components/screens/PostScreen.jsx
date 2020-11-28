@@ -37,9 +37,9 @@ const renderPost = ({ item }) => (
         <Button title="renderPost item.PostDetails" onPress={() => { console.log(item.PostDetails) }} />
         <Button title="renderPost item.PostDetails.Title" onPress={() => { console.log(item.PostDetails.Title) }} /> */}
 
-        <Text>{item.PostDetails.Title}</Text>
-        <Text>{item.PostDetails.Course}</Text>
-        <Text>{item.PostDetails.Description}</Text>
+        <Text>{item.textState.Title}</Text>
+        <Text>{item.textState.Course}</Text>
+        <Text>{item.textState.Post}</Text>
 
 
 
