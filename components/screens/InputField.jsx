@@ -3,20 +3,14 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity,
-    Image,
-    Alert,
-    ScrollView,
-    FlatList,
-    Button,
     TextInput
   } from "react-native";
 
 export default function InputField({Title, Description, onChange, value}){
     return(
     <>
-        <View>
-            <Text>{Description}</Text>
+        <View style = { styles.container}>
+            <Text style={styles.title}>{Description}</Text>
                 <TextInput
                 name = {Title}
                 style = {styles.input}
@@ -24,10 +18,43 @@ export default function InputField({Title, Description, onChange, value}){
                 value = {value}
             />
         </View>
+        
     </>
     )
 }
 
 const styles = StyleSheet.create({
-    input: { height: 40, borderColor: "gray", borderWidth: 1 }
+    input: { 
+        borderWidth: 3.5,
+        borderColor: "#303f9f",
+        marginTop: 15,
+        marginBottom: 60,
+        marginLeft: 30,
+        paddingHorizontal: 20,
+        width:"80%",
+        backgroundColor:"#E9F2FD",
+        borderRadius:10,
+        height:65,
+        justifyContent:"center",
+        padding:20
+    },
+    container:
+     {
+         backgroundColor: '#D6DAF1', // Set your own custom Color
+         marginBottom: 9,
+     },
+
+     title:{
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "left",
+        marginTop: 10,
+        marginLeft: 50,
+        color: "black",
+        fontStyle: "normal",
+        fontFamily: "Gill Sans",
+        letterSpacing: 5,
+        textDecorationColor: "#fff",
+     }
+
 })

@@ -92,33 +92,27 @@ export default function HomeHome(props) {
             }}
           >
             <View style={styles.card}>
-              <View testID="user Profile" style={styles.container}>
+             
+             { /* <View testID="user Profile" style={styles.container}>
                 <Image
                   style={styles.cardImage}
                   source={{ uri: "https://i.imgur.com/DzujRVN.jpg" }}
                 />
-                {/* User Profile Overview data like the name, number of upvotes and whatever else will go here */}
-              </View>
+                {/* User Profile Overview data like the name, number of upvotes and whatever else will go here 
+              </View> */}
 
               <View style={styles.cardHeader}>
                 <View>
                   <Text style={styles.title}>{item.textState.Title}</Text>
-                  <Text style={styles.description}>{item.description}</Text>
-                  <View style={styles.timeContainer}>
-                    <Image
-                      style={styles.iconData}
-                      source={{
-                        uri:
-                          "https://img.icons8.com/color/96/3498db/calendar.png",
-                      }}
-                    />
-                    <Text style={styles.time}>{Date(item.createdAt)}</Text>
-                  </View>
+                  <Text style={styles.description}>Related Course: {item.textState.Course}</Text>
+                
                 </View>
               </View>
               <View style={styles.cardFooter}>
                 <View style={styles.BarContainer}>
-                  <View style={styles.BarSection}>
+                  
+                  
+                  {/*<View style={styles.BarSection}>
                     <TouchableOpacity style={styles.BarButton}>
                       <Image
                         style={styles.icon}
@@ -141,13 +135,24 @@ export default function HomeHome(props) {
                       />
                       <Text style={styles.BarLabel}>25</Text>
                     </TouchableOpacity>
-                  </View>
+                      </View> */}
+
                   <View style={styles.BarSection}>
+                  <View style={styles.timeContainer}>
+                    <Image
+                      style={styles.iconData}
+                      source={{
+                        uri:
+                          "https://img.icons8.com/color/96/3498db/calendar.png",
+                      }}
+                    />
+                    <Text style={styles.time}>{Date(item.createdAt)}</Text>
+                  </View>
                     <TouchableOpacity>
                       {item.postedBy === fbCurrentUser && (
                         <>
                           <View >
-                            <TouchableOpacity
+                            <TouchableOpacity 
                               onPress={async () => {
                                 await dbService
                                   .doc(`feeds/${item.id}`)
@@ -297,11 +302,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   description: {
-    fontSize: 15,
-    color: "#888",
+    fontSize: 12,
+    color: "#000",
     flex: 1,
     marginTop: 5,
     marginBottom: 5,
+    fontWeight: "bold"
+    
   },
   time: {
     fontSize: 13,
@@ -350,7 +357,9 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontSize: 15,
     fontWeight: "bold",
-    color: '#800000'
+    color: '#800000',
+    marginLeft: 20,
+    marginBottom: 5
   },
   EditButton: {
     flexDirection: "row",
@@ -359,6 +368,9 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontSize: 15,
     fontWeight: "bold",
-    color: '#bdbd00'
+    color: '#bdbd00',
+    marginLeft: 30
   },
+
+
 });

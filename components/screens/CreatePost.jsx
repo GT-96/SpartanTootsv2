@@ -4,19 +4,16 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  Image,
-  Alert,
-  ScrollView,
-  FlatList,
   Button,
 } from "react-native";
 import { NavigationContainer, StackActions } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { color } from "react-native-reanimated";
 import { TextInput } from "react-native-paper";
+import Emoji from 'react-native-emoji';
 import InputField from "./InputField";
 import firebase from "../firebase/Firebase";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const textInputReducer = (state, action) => {
   switch (action.textToChange) {
@@ -80,8 +77,13 @@ export default function CreatePost(props) {
   //    console.log(props);
 
   return (
-    <View>
+    <View style = { styles.container}>
       <>
+      <Text style={styles.title}>
+        Get help, get connected!
+        <Emoji name="brain" style={{fontSize: 30}} />
+        <Emoji name="sunglasses" style={{fontSize: 30}} />
+        </Text>
         <InputField
           Title="Title"
           Description="Title"
@@ -98,7 +100,7 @@ export default function CreatePost(props) {
             dispatchText({ textToChange: "Course", valueToApply: text })
           }
         />
-        <InputField
+        <InputField 
           Title="Post"
           Description="Post"
           value={Post}
@@ -107,13 +109,24 @@ export default function CreatePost(props) {
           }
         />
       </>
-      <Button
+
+     {/* <Button 
         title="show props"
         onPress={() => {
           console.log("this is in createPost");
           console.log(props);
         }}
-      />
+      />*/}
+
+      <TouchableOpacity
+          onPress={() => {
+          console.log("this is in createPost");
+          console.log(props);
+        }}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>show props</Text>
+        </TouchableOpacity>
 
       {/* <Button
         title="show textState"
@@ -126,15 +139,58 @@ export default function CreatePost(props) {
             console.log("TESTsss DATABASE");
         }}
       /> */}
-      <Button title="submit" onPress={() => {
+      
+      {/*<Button title="submit" onPress={() => {
         submitPost(props, textState);
-      }} />
+      }} /> */}
 
-      <Text>{}</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+        submitPost(props, textState);
+      }} >
+         <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   input: { height: 40, borderColor: "gray", borderWidth: 1 },
+  container:
+  {
+      backgroundColor: '#D6DAF1' // Set your own custom Color
+
+  },
+  title:{
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 10,
+    marginLeft: 10,
+    marginBottom: 20,
+    color: "black",
+    fontStyle: "normal",
+    fontFamily: "Helvetica",
+    letterSpacing: 2,
+    textDecorationColor: "#fff",
+ },
+ button: {
+    marginTop: -30,
+    marginBottom: 45,
+    width: 140,
+    backgroundColor: "#303f9f",
+    paddingVertical: 15,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: "#303f9f",
+    marginLeft: 135
+  
+},
+buttonText: {
+  textAlign: "center",
+  color: "#FFFFFF",
+  fontWeight: "900",
+}
 });
