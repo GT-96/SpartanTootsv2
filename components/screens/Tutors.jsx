@@ -1,13 +1,36 @@
-import React from 'react';
+//import React from 'react';
+import React, { Component, useState } from "react";
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import firebase from "../firebase/Firebase";
+import { storageService } from "../firebase/Firebase";
 
-function Item({ item }) {
+const Item = ({ item }) => {
+ 
+  const fbCurrentUser = firebase.auth().currentUser.uid;
+  const refImageUrl = storageService.ref(`${fbCurrentUser}/profilePic`);
+  const responseImage = refImageUrl.getDownloadURL()
+  .then((url) => {
+    //from url you can fetched the uploaded image easily
+     console.log("this is the link");
+     console.log(url);
+    setAttachment(url);
+  })
+  .catch((e) => console.log('getting downloadURL of image error => ', e));
+ 
+  // const uploadImage = async (uri, name, firebasePath) => {
+  //   const refImageUrl = storageService.ref(`${fbCurrentUser}/sdfsdfsdfsssdsdsd`)
+  //   await refImageUrl.putFile(uri, { contentType: 'image/jpg'}).catch((error) => { throw error })
+  //   const url = await refImageUrl.getDownloadURL().catch((error) => { throw error });
+  //   return url
+  // }
+  //const uploadedUrl = await uploadImage('uri/of/local/image', 'image.jpg', `${fbCurrentUser}/sdfsdfsdfsssdsdsd`);
   return (
     <View style={styles.listItem}>
-      <Image source={{uri:item.photo}}  style={{width:65, height:65,borderRadius:30}} />
+      {console.log(responseImage)}
+      <Image source={{uri:item.image}}  style={{width:65, height:65,borderRadius:30}} />
       <View style={{alignItems:"center",flex:1}}>
-        <Text style={{fontWeight:"bold"}}>{item.name}</Text>
-        <Text>{item.courses}</Text>
+        <Text style={{fontWeight:"bold"}}>{item.tutorName}</Text>
+        <Text>{item.tutorClasses}</Text>
       </View>
       <TouchableOpacity style={{height:50,width:50, justifyContent:"center",alignItems:"center"}}>
       <Image style={styles.logo}source={require("../images/chat3.png")} />
@@ -17,50 +40,24 @@ function Item({ item }) {
   );
 }
 
-export default class Tutors extends React.Component {
-  state = {
-    data:[
-        {
-          
-            "name": "Jennifer N.",
-            "courses": "CMPE 102, CS 151, MATH 123A",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/women\/27.jpg"
-        },
-        {
-            "name": "Michael C.",
-            "courses": "PHYS 51, CS 151, CMPE 120, CMPE 146",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/men\/33.jpg"
-        },
-        {
-            "name": "Karen R.",
-            "courses": "CS 174",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/women\/52.jpg"
-        },
-        {
-            "name": "Abby P.",
-            "courses": "CS 158B, CMPE 148, CS 157A",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/women\/8.jpg"
-        },
-        {
-            "name": "Thomas S.",
-            "courses": "CS 46B, CMPE 165",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/men\/67.jpg"
-        },
-        {
-            "name": "Rohan P.",
-            "courses": "CS 149, CS 166, CMPE 172 ",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/men\/77.jpg"
-        },
-        {
-            "name": "Bonnie Y.",
-            "courses": "CMPE 102, CS 157A, CMPE 187, CMPE 172",
-            "photo": "https:\/\/randomuser.me\/api\/portraits\/women\/26.jpg"
-        }
-    ]
-  }
+export default function Tutors(props)  {
 
+  const dbService = firebase.firestore();
+  const fbCurrentUser = firebase.auth().currentUser.uid;
+  const [tutors, setTutors] = useState([]);
+  const [attachment, setAttachment] = React.useState();
 
-  render(){
+  React.useEffect(() => {
+    //getFeeds();
+    dbService.collection("tutors").onSnapshot((snapshot) => {
+      const tutorArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTutors(tutorArray);
+    });
+  }, []);
+  
     return (
       <View style={styles.container}>
        <TouchableOpacity>
@@ -69,14 +66,15 @@ export default class Tutors extends React.Component {
        
         <FlatList
           style={{flex:1}}
-          data={this.state.data}
-          renderItem={({ item }) => <Item item={item}/>}
-          keyExtractor={item => item.name}
+          data={tutors}
+          renderItem={Item}
+          keyExtractor={(tutor) => tutor.id}
         />
       </View>
     );
-  }
+  
 }
+
 
 const styles = StyleSheet.create({
   container: {

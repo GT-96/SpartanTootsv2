@@ -55,9 +55,10 @@ const SettingStackScreen = ({ log, setLog }) => {
   );
 };
 
-const TutorsStackScreen = () => (
+const TutorsStackScreen = ({userObject}) => (
   <SettingStack.Navigator>
     <SettingStack.Screen name="Tutors" component={Tutors} />
+
   </SettingStack.Navigator>
 );
 

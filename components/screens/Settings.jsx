@@ -6,6 +6,8 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
+  Text,
+  TextInput
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import SettingsList from "react-native-settings-list";
@@ -39,11 +41,28 @@ import { createStackNavigator } from "@react-navigation/stack";
 // }
 //   render() {
 export default function Settings({ log, setLog }) {
+  //tutor info
+  const [tutorName, setTutorName] = useState("");
+  const [tutorClasses, setTutorClasses] = useState("");
   const [tutorMode, setTutorMode] = useState(true);
+  const [tutorImage, setTutorImage] = useState();
+
+  tutorImage
+
   const [pushNotifications, setPushNotifications] = useState(false);
   const [myImage, setMyImage] = React.useState();
   const fbCurrentUser = authService.currentUser.uid;
   const dbService = firebase.firestore();
+ 
+  const refImageUrl = storageService.ref(`${fbCurrentUser}/profilePic`);
+  const responseImage = refImageUrl.getDownloadURL()
+  .then((url) => {
+    //from url you can fetched the uploaded image easily
+     console.log("this is the link");
+     console.log(url);
+     setTutorImage(url);
+  })
+  .catch((e) => console.log('getting downloadURL of image error => ', e));
   //const { v4: uuidv4 } = require('uuid');
   
 
@@ -76,7 +95,7 @@ export default function Settings({ log, setLog }) {
 
       storageService
         .ref()
-        .child(`${fbCurrentUser}/sdfsdfsdfsssdsdsd`)
+        .child(`${fbCurrentUser}/profilePic`)
         .put(blob, {
           contentType: "image/jpeg",
         })
@@ -151,11 +170,24 @@ export default function Settings({ log, setLog }) {
 
    const modeChange = ()=>{
     setTutorMode(!tutorMode);
+    setTutorClasses("CS166, CS157A");
+    setTutorName("Saoud");
+    
+
      dbService
     .collection("tutors").doc(`${fbCurrentUser}`)
-    .set({tutorMode: tutorMode  })
+    .set({ tutorName:tutorName, tutorClasses:tutorClasses, tutorMode: tutorMode, image: tutorImage  })
     
   }; 
+
+  // React.useEffect(() => {
+  //   //getFeeds();
+  //   dbService.collection("tutors").doc("image")
+  //   .onSnapshot(function(doc) {
+  //       console.log("Current data: ", doc.data());
+  //   });
+  // }, []);
+
   return (
     <ScrollView>
       <View style={{ flex: 1 }}>
@@ -164,7 +196,7 @@ export default function Settings({ log, setLog }) {
             <Avatar.Image
               style={styles.iconData}
               size={240}
-              source={require("../images/prof.png")}
+              source={{uri:tutorImage}}
               //source={{uri:myImage.uri}}
             />
           </TouchableOpacity>
@@ -184,6 +216,7 @@ export default function Settings({ log, setLog }) {
               onPress={() => Alert.alert("Email is not editable")}
             />
             <SettingsList.Item
+
               title="Subjects"
               titleInfo="CS 151, CMPE 102, MATH 123A, CS 149"
               titleInfoStyle={styles.titleInfoStyle}
