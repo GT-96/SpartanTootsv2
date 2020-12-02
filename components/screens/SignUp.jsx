@@ -42,19 +42,19 @@ export default function SignUp({ navigation }) {
   return (
     <View
       style={{
-        marginTop: 90,
+      
         flex: 1,
 
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#567FED",
+        backgroundColor: "#3F51B5",
       }}
     >
       <Image style={styles.logo} source={require("../images/ST.png")} />
 
       <TextInput
         placeholder="Username"
-        placeholderTextColor="rgba(0,0,0,0.5)"
+        placeholderTextColor="rgba(0,0,0,0.6)"
         style={styles.input}
         onChangeText={(user) => setUsername({ user })}
         //value={username}
@@ -62,7 +62,7 @@ export default function SignUp({ navigation }) {
 
       <TextInput
         placeholder="Password"
-        placeholderTextColor="rgba(0,0,0,0.5)"
+        placeholderTextColor="rgba(0,0,0,0.6)"
         style={styles.input}
         onChangeText={(pass) => setPassword({ pass })}
         //value={password}
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     height: 200,
     marginTop: 0,
     marginBottom: 40,
-    marginTop: -170,
+    marginTop: -100,
   },
 
   buttonContainer: {
@@ -125,25 +125,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingVertical: 20,
     borderRadius: 10,
+    borderWidth: 3.5,
+    borderColor: "#303f9f",
   },
 
   buttonText: {
     textAlign: "center",
-    color: "#567FED",
+    color: "#3F51B5",
     fontWeight: "900",
   },
 
   input: {
     height: 40,
     borderWidth: 3.5,
-    borderColor: "#339CFF",
-    backgroundColor: "rgba(255,255,255,1.3)",
+    borderColor: "#303f9f",
     marginTop: 15,
     marginBottom: 30,
-    color: "#000",
-    paddingHorizontal: 100,
-    textAlignVertical: "top",
-    borderRadius: 10,
+    paddingHorizontal: 20,
+    width:"80%",
+    backgroundColor:"#E9F2FD",
+    borderRadius:20,
+    height:65,
+    marginBottom:25,
+    justifyContent:"center",
+    padding:20
   },
   plaintxt: {
     height: 40,
