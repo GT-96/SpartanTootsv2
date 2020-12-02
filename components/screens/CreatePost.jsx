@@ -118,7 +118,7 @@ export default function CreatePost(props) {
         }}
       />*/}
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
           onPress={() => {
           console.log("this is in createPost");
           console.log(props);
@@ -126,7 +126,7 @@ export default function CreatePost(props) {
         style={styles.button}
       >
         <Text style={styles.buttonText}>show props</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       {/* <Button
         title="show textState"
