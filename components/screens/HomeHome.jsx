@@ -221,7 +221,7 @@ export default function HomeHome(props) {
         <TouchableOpacity onPress={() => createPostNavi()}>
           <Image
             style={styles.plusIcon}
-            source={require("../images/PlusIcon.png")}
+            source={require("../images/PlusIcon2.png")}
           />
         </TouchableOpacity>
       </View>

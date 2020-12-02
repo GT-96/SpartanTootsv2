@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
-  TextInput
+  TextInput,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import SettingsList from "react-native-settings-list";
@@ -22,7 +22,8 @@ import { AuthContext } from "./AuthCon";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import EditSettings from  "./EditSettings"
+import EditSettings from "./EditSettings";
+import InputField from "../screens/InputField";
 //import Component from 'react';
 
 // class Settings extends React.Component {
@@ -48,11 +49,21 @@ const cloudSettingsReducer = (state, action) => {
   console.log("this is hitting in cloud settings reducer");
   switch (action.valueToChange) {
     case "All":
-      return {...state, tutorMode: action.tutorMode, image: action.image, tutorClasses: action.tutorClasses, tutorName: action.tutorName}
-      case "image":
-        return {...state, image: action.valueToApply}
-      case "Tutor Mode":
+      return {
+        ...state,
+        tutorMode: action.tutorMode,
+        image: action.image,
+        tutorClasses: action.tutorClasses,
+        tutorName: action.tutorName,
+      };
+    case "image":
+      return { ...state, image: action.valueToApply };
+    case "Tutor Mode":
       return { ...state, tutorMode: action.valueToApply };
+    case "tutorName":
+      return { ...state, tutorName: action.valueToApply };
+    case "Courses":
+      return { ...state, tutorClasses: action.valueToApply };
     // case "Course":
     //   return { ...state, Course: action.valueToApply };
     // case "Post":
@@ -62,53 +73,58 @@ const cloudSettingsReducer = (state, action) => {
   }
 };
 
-export default function Settings({ log, setLog, navigation}) {
+export default function Settings({ log, setLog }) {
   // <stackNavigator.Navigator>
   //   <stackNavigator.Screen name="Edit" component={EditSettings}/>
 
-    
   // </stackNavigator.Navigator>
   //tutor info
   const [tutorName, setTutorName] = useState("");
   const [tutorClasses, setTutorClasses] = useState("");
   const [tutorImage, setTutorImage] = useState("");
   // const [cloudSettingsData, setCloudData] = useState({});
-  const[cloudSettingsData, dispatchCloudSettings] = useReducer(cloudSettingsReducer,{});
-  const [newImageUploaded, setNewImageBool]= useState(false);
+  const [cloudSettingsData, dispatchCloudSettings] = useReducer(
+    cloudSettingsReducer,
+    {}
+  );
+  const [newImageUploaded, setNewImageBool] = useState(false);
   // tutorImage
-  const [tutorInfo, setTutorInfo]= useState({tutorName:"", tutorClasses:[], tutorImage:"", tutorMode: false});
+  const [tutorInfo, setTutorInfo] = useState({
+    tutorName: "",
+    tutorClasses: [],
+    tutorImage: "",
+    tutorMode: false,
+  });
   const [pushNotifications, setPushNotifications] = useState(false);
   const [myImage, setMyImage] = React.useState();
   const fbCurrentUser = authService.currentUser.uid;
   const dbService = firebase.firestore();
   const refImageUrl = storageService.ref(`${fbCurrentUser}/profilePic`);
-  
-  const responseImage =()=>{
-    if(tutorImage==="" || newImageUploaded){
-      refImageUrl.getDownloadURL()
-      .then((url) => {
-        //from url you can fetched the uploaded image easily
-         console.log("this is the link");
-         console.log(url);
-         setTutorImage(url);
-         setNewImageBool(false);
-         dispatchCloudSettings({valueToChange:"image", valueToApply:url})
+  const [editEnabled, setEditEnabled] = useState(false);
 
-         dbService
-         .collection('tutors')
-         .doc(`${fbCurrentUser}`)
-         .set(cloudSettingsData)
-      })
-      .catch((e) => console.log('getting downloadURL of image error => ', e));
+  const responseImage = () => {
+    if (tutorImage === "" || newImageUploaded) {
+      refImageUrl
+        .getDownloadURL()
+        .then((url) => {
+          //from url you can fetched the uploaded image easily
+          console.log("this is the link");
+          console.log(url);
+          setTutorImage(url);
+          setNewImageBool(false);
+          dispatchCloudSettings({ valueToChange: "image", valueToApply: url });
+
+          dbService
+            .collection("tutors")
+            .doc(`${fbCurrentUser}`)
+            .set(cloudSettingsData);
+        })
+        .catch((e) => console.log("getting downloadURL of image error => ", e));
       //const { v4: uuidv4 } = require('uuid');
     }
-
-  } 
+  };
 
   responseImage();
-  
-
-
 
   uriToBlob = (uri) => {
     return new Promise((resolve, reject) => {
@@ -152,35 +168,28 @@ export default function Settings({ log, setLog, navigation}) {
     });
   };
 
-  handleOnPress = () => { 
-
-    ImagePicker.launchImageLibraryAsync({ 
-      mediaTypes: "Images"
-    }).then((result)=>{ 
-
-      if (!result.cancelled) {
-        // User picked an image
-        const {height, width, type, uri} = result;
-        return uriToBlob(uri);
-
-      }
-
-    }).then((blob)=>{
-
-      return uploadToFirebase(blob);
-
-    }).then((snapshot)=>{
-
-      console.log("File uploaded");
-      setNewImageBool(true);
-   
-    }).catch((error)=>{
-
-      throw error;
-
-    }); 
-
-  }
+  handleOnPress = () => {
+    ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "Images",
+    })
+      .then((result) => {
+        if (!result.cancelled) {
+          // User picked an image
+          const { height, width, type, uri } = result;
+          return uriToBlob(uri);
+        }
+      })
+      .then((blob) => {
+        return uploadToFirebase(blob);
+      })
+      .then((snapshot) => {
+        console.log("File uploaded");
+        setNewImageBool(true);
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };
 
   // pickImage = async () => {
   //   let result = await ImagePicker.launchImageLibraryAsync({
@@ -210,25 +219,28 @@ export default function Settings({ log, setLog, navigation}) {
   //console.log("myImage");
   //console.log(myImage);
 
-   const modeChange = ()=>{
-     console.log("this is hitting in mode Change")
+  const modeChange = () => {
+    console.log("this is hitting in mode Change");
     // setTutorMode(cloudSettingsData.tutorMode);
     // setTutorMode(!tutorMode);
     // setTutorClasses(cloudSettingsData.tutorClasses);
     // setTutorName(cloudSettingsData.tutorName);
     // setCloudData(cloudSettingsReducer(cloudSettingsData, {valueToChange:"Tutor Mode", valueToApply:!cloudSettingsData.tutorMode}));
-    dispatchCloudSettings({valueToChange: "Tutor Mode", valueToApply: !cloudSettingsData.tutorMode});
-     dbService
-    .collection("tutors").doc(`${fbCurrentUser}`)
-    .set(cloudSettingsData);
+    dispatchCloudSettings({
+      valueToChange: "Tutor Mode",
+      valueToApply: !cloudSettingsData.tutorMode,
+    });
+    dbService
+      .collection("tutors")
+      .doc(`${fbCurrentUser}`)
+      .set(cloudSettingsData);
     // .set({ tutorName:tutorName, tutorClasses:tutorClasses, tutorMode: tutorMode, image: tutorImage  })
-    
-  }; 
+  };
 
   const fetchTutorCloudData = () => {
     console.log("this is reached in fetchTutorCloudData");
-    if (Object.keys(cloudSettingsData).length ===0) {
-      var newUser= false;
+    if (Object.keys(cloudSettingsData).length === 0) {
+      var newUser = false;
       dbService
         .collection("tutors")
         .doc(`${fbCurrentUser}`)
@@ -240,37 +252,53 @@ export default function Settings({ log, setLog, navigation}) {
             // var tutorClasses = doc.data().tutorClasses;
             var tutorClasses = ["Default", "Test 1", "Test 2"];
             var tutorMode = doc.data().tutorMode;
-            var tutorName = doc.data().tutorName
-            if(image==undefined){
-              image="empty"
+            var tutorName = doc.data().tutorName;
+            if (image == undefined) {
+              image = "empty";
             }
-            if(tutorClasses==undefined){
+            if (tutorClasses == undefined) {
               tutorClasses = ["Default"];
             }
-            if(tutorMode==undefined){
-              tutorMode=true;
+            if (tutorMode == undefined) {
+              tutorMode = true;
             }
-            if(tutorName==undefined){
+            if (tutorName == undefined) {
               newUser = true;
-              tutorName =authService.currentUser.email.substring(0, authService.currentUser.email.indexOf('@'));
+              tutorName = authService.currentUser.email.substring(
+                0,
+                authService.currentUser.email.indexOf("@")
+              );
             }
-            console.log("image :",image);
-            dispatchCloudSettings({valueToChange: "All", image: image, tutorClasses: tutorClasses, 
-            tutorMode:tutorMode , tutorName: tutorName});
+            console.log("image :", image);
+            dispatchCloudSettings({
+              valueToChange: "All",
+              image: image,
+              tutorClasses: tutorClasses,
+              tutorMode: tutorMode,
+              tutorName: tutorName,
+            });
 
-            if(newUser){
+            if (newUser) {
               dbService
-              .collection("tutors").doc(`${fbCurrentUser}`)
-              .set(cloudSettingsData);
+                .collection("tutors")
+                .doc(`${fbCurrentUser}`)
+                .set(cloudSettingsData);
 
               console.log("this is reached in new user if statement");
 
-              dbService.collection("tutors").doc(`${fbCurrentUser}`)
-              .get()
-              .then(function (doc2){
-                dispatchCloudSettings({valueToChange: "All", image: doc2.data().image, tutorClasses: doc2.data().tutorClasses, 
-                tutorMode:doc2.data().tutorMode , tutorName: doc2.data().tutorName});
-              })
+              dbService
+                .collection("tutors")
+                .doc(`${fbCurrentUser}`)
+                .get()
+                .then(function (doc2) {
+                  dispatchCloudSettings({
+                    valueToChange: "All",
+                    image: doc2.data().image,
+                    tutorClasses: doc2.data().tutorClasses,
+                    tutorMode: doc2.data().tutorMode,
+                    tutorName: doc2.data().tutorName,
+                  });
+                });
             }
           } else {
             // doc.data() will be undefined in this case
@@ -280,7 +308,10 @@ export default function Settings({ log, setLog, navigation}) {
             // var tutorClasses = doc.data().tutorClasses;
             var tutorClasses = ["Default", "Test 1", "Test 2"];
             var tutorMode = false;
-            var tutorName = authService.currentUser.email.substring(0, authService.currentUser.email.indexOf('@'));
+            var tutorName = authService.currentUser.email.substring(
+              0,
+              authService.currentUser.email.indexOf("@")
+            );
             // if(image==undefined){
             //   image="empty"
             // }
@@ -294,30 +325,43 @@ export default function Settings({ log, setLog, navigation}) {
             //   newUser = true;
             //   tutorName =authService.currentUser.email.substring(0, authService.currentUser.email.indexOf('@'));
             // }
-            console.log("image :",image);
-            dispatchCloudSettings({valueToChange: "All", image: image, tutorClasses: tutorClasses, 
-            tutorMode:tutorMode , tutorName: tutorName});
-            if(newUser){
+            console.log("image :", image);
+            dispatchCloudSettings({
+              valueToChange: "All",
+              image: image,
+              tutorClasses: tutorClasses,
+              tutorMode: tutorMode,
+              tutorName: tutorName,
+            });
+            if (newUser) {
               dbService
-              .collection("tutors").doc(`${fbCurrentUser}`)
-              .set(cloudSettingsData);
+                .collection("tutors")
+                .doc(`${fbCurrentUser}`)
+                .set(cloudSettingsData);
 
-              console.log("this is reached in new user if statement in doc else statement");
+              console.log(
+                "this is reached in new user if statement in doc else statement"
+              );
 
-              dbService.collection("tutors").doc(`${fbCurrentUser}`)
-              .get()
-              .then(function (doc2){
-                dispatchCloudSettings({valueToChange: "All", image: doc2.data().image, tutorClasses: doc2.data().tutorClasses, 
-                tutorMode:doc2.data().tutorMode , tutorName: doc2.data().tutorName});
-              })
+              dbService
+                .collection("tutors")
+                .doc(`${fbCurrentUser}`)
+                .get()
+                .then(function (doc2) {
+                  dispatchCloudSettings({
+                    valueToChange: "All",
+                    image: doc2.data().image,
+                    tutorClasses: doc2.data().tutorClasses,
+                    tutorMode: doc2.data().tutorMode,
+                    tutorName: doc2.data().tutorName,
+                  });
+                });
             }
-
           }
         })
         .catch(function (error) {
           console.log("Error getting document:", error);
         });
-
     }
   };
   fetchTutorCloudData();
@@ -327,7 +371,6 @@ export default function Settings({ log, setLog, navigation}) {
   // const [tutorMode, setTutorMode] = useState(cloudSettingsData.tutorMode);
   // console.log(tutorMode);
 
-
   // React.useEffect(() => {
   //   //getFeeds();
   //   dbService.collection("tutors").doc("image")
@@ -336,22 +379,133 @@ export default function Settings({ log, setLog, navigation}) {
   //   });
   // }, []);
 
-  return (
-    <ScrollView>
-      <View style={{ flex: 1 }}>
-        <View style={{ backgroundColor: "#EFEFF4" }}>
-          <Button
-            onPress={() => {
-              navigation.navigate("Edit");
-              // const tutorsItem = dbService
-              //   .collection("tutors")
-              //   .doc(`${fbCurrentUser}`).get.arguments;
-              // console.log("this is tutorsItem");
-              // console.log(tutorsItem);
-            }}
-          >
-            Edit
-          </Button>
+  if (!editEnabled) {
+    return (
+      <>
+        <ScrollView>
+          <View style={{ flex: 1 }}>
+            <View style={{ backgroundColor: "#EFEFF4" }}>
+              <Button
+                onPress={() => {
+                  setEditEnabled(true);
+                  // const tutorsItem = dbService
+                  //   .collection("tutors")
+                  //   .doc(`${fbCurrentUser}`).get.arguments;
+                  // console.log("this is tutorsItem");
+                  // console.log(tutorsItem);
+                }}
+              >
+                Edit
+              </Button>
+              <TouchableOpacity onPress={handleOnPress}>
+                <Avatar.Image
+                  style={styles.iconData}
+                  size={240}
+                  source={{ uri: tutorImage }}
+                  //source={{uri:myImage.uri}}
+                />
+              </TouchableOpacity>
+
+              <SettingsList borderColor="#c8c7cc" defaultItemSize={60}>
+                <SettingsList.Header headerStyle={{ marginTop: 20 }} />
+
+                <SettingsList.Item
+                  title="Name"
+                  titleInfo={cloudSettingsData.tutorName}
+                  titleInfoStyle={styles.titleInfoStyle}
+                />
+                <SettingsList.Item
+                  title="Email"
+                  titleInfo={authService.currentUser.email}
+                  titleInfoStyle={styles.titleInfoStyle}
+                  onPress={() => Alert.alert("Email is not editable")}
+                />
+                <SettingsList.Item
+                  title="Subjects"
+                  titleInfo={cloudSettingsData.tutorClasses}
+                  titleInfoStyle={styles.titleInfoStyle}
+                />
+                <SettingsList.Header headerStyle={{ marginTop: 20 }} />
+
+                <SettingsList.Item
+                  hasSwitch={true}
+                  switchState={cloudSettingsData.tutorMode}
+                  // switchOnValueChange={() => {
+                  //   setTutorMode(!tutorMode);
+                  // }}
+                  // switchOnValueChange={ () => {
+                  //    dbService
+                  //     .collection("tutorMode")
+                  //     .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser, })},
+                  //     setTutorMode(!tutorMode)
+                  //   }
+                  //modeChange
+                  switchOnValueChange={modeChange}
+                  hasNavArrow={false}
+                  title="Tutor Mode"
+                />
+
+                <SettingsList.Item
+                  hasSwitch={true}
+                  switchState={pushNotifications}
+                  switchOnValueChange={() => {
+                    setPushNotifications(!pushNotifications);
+                  }}
+                  hasNavArrow={false}
+                  title="Push Notifications"
+                />
+
+                <SettingsList.Header headerStyle={{ marginTop: 75 }} />
+
+                <SettingsList.Item
+                  icon={
+                    <Image
+                      style={styles.imageStyle}
+                      source={require("../images/ST.png")}
+                    />
+                  }
+                  title="Logout"
+                  //onPress={() => navigation.navigate("Log in")}
+                  // onPress={() => Alert.alert("Are you sure?", "Logging out will require you to reenter your credentials.",
+                  // [ {text: 'Logout', style: 'destructive'}, {text: 'Cancel'},
+                  // ],{cancelable: false}
+                  // )}
+                  onPress={() => {
+                    Alert.alert(
+                      "Are you sure?",
+                      "Logging out will require you to reenter your credentials.",
+                      [
+                        {
+                          text: "Logout",
+                          style: "destructive",
+                          onPress: () => {
+                            authService.signOut();
+                            setLog(!log);
+                            console.log(authService.currentUser);
+                          },
+                        },
+                        { text: "Cancel" },
+                      ],
+                      { cancelable: false }
+                    );
+
+                    //console.log(authService.currentUser);
+                    //navigation.navigate('Log in');
+                    // this.props.navigation.navigate('HomeScreen');
+                    //AuthContext.signOut();
+                  }}
+                />
+              </SettingsList>
+            </View>
+          </View>
+        </ScrollView>
+      </>
+    );
+  } else {
+    return (
+      <>
+        {/* <Text> EDIT IN PROGRESS</Text> */}
+        <ScrollView>
           <TouchableOpacity onPress={handleOnPress}>
             <Avatar.Image
               style={styles.iconData}
@@ -360,101 +514,53 @@ export default function Settings({ log, setLog, navigation}) {
               //source={{uri:myImage.uri}}
             />
           </TouchableOpacity>
+          <InputField
+            Title="Name"
+            Description="Name"
+            value={cloudSettingsData.tutorName}
+            onChange={(text) =>
+              dispatchCloudSettings({
+                valueToChange: "tutorName",
+                valueToApply: text,
+              })
+            }
+          />
+          <InputField
+            Title="Courses"
+            Description="Courses"
+            value={cloudSettingsData.tutorClasses}
+            onChange={(text) =>
+              dispatchCloudSettings({
+                valueToChange: "Courses",
+                valueToApply: text,
+              })
+            }
+          />
 
-          <SettingsList borderColor="#c8c7cc" defaultItemSize={60}>
-            <SettingsList.Header headerStyle={{ marginTop: 20 }} />
+          <Button
+            onPress={() => {
+              dbService
+                .collection("tutors")
+                .doc(`${fbCurrentUser}`)
+                .set(cloudSettingsData);
 
-            <SettingsList.Item
-              title="Name"
-              titleInfo={cloudSettingsData.tutorName}
-              titleInfoStyle={styles.titleInfoStyle}
-            />
-            <SettingsList.Item
-              title="Email"
-              titleInfo={authService.currentUser.email}
-              titleInfoStyle={styles.titleInfoStyle}
-              onPress={() => Alert.alert("Email is not editable")}
-            />
-            <SettingsList.Item
-              title="Subjects"
-              titleInfo={cloudSettingsData.tutorClasses}
-              titleInfoStyle={styles.titleInfoStyle}
-            />
-            <SettingsList.Header headerStyle={{ marginTop: 20 }} />
+              setEditEnabled(false);
+            }}
+          >
+            Submit Changes
+          </Button>
 
-            <SettingsList.Item
-              hasSwitch={true}
-              switchState={cloudSettingsData.tutorMode}
-              // switchOnValueChange={() => {
-              //   setTutorMode(!tutorMode);
-              // }}
-              // switchOnValueChange={ () => {
-              //    dbService
-              //     .collection("tutorMode")
-              //     .add({ textState, createdAt: Date.now(), postedBy: fbCurrentUser, })},
-              //     setTutorMode(!tutorMode)
-              //   }
-              //modeChange
-              switchOnValueChange={modeChange}
-              hasNavArrow={false}
-              title="Tutor Mode"
-            />
-
-            <SettingsList.Item
-              hasSwitch={true}
-              switchState={pushNotifications}
-              switchOnValueChange={() => {
-                setPushNotifications(!pushNotifications);
-              }}
-              hasNavArrow={false}
-              title="Push Notifications"
-            />
-
-            <SettingsList.Header headerStyle={{ marginTop: 75 }} />
-
-            <SettingsList.Item
-              icon={
-                <Image
-                  style={styles.imageStyle}
-                  source={require("../images/ST.png")}
-                />
-              }
-              title="Logout"
-              //onPress={() => navigation.navigate("Log in")}
-              // onPress={() => Alert.alert("Are you sure?", "Logging out will require you to reenter your credentials.",
-              // [ {text: 'Logout', style: 'destructive'}, {text: 'Cancel'},
-              // ],{cancelable: false}
-              // )}
-              onPress={() => {
-                Alert.alert(
-                  "Are you sure?",
-                  "Logging out will require you to reenter your credentials.",
-                  [
-                    {
-                      text: "Logout",
-                      style: "destructive",
-                      onPress: () => {
-                        authService.signOut();
-                        setLog(!log);
-                        console.log(authService.currentUser);
-                      },
-                    },
-                    { text: "Cancel" },
-                  ],
-                  { cancelable: false }
-                );
-
-                //console.log(authService.currentUser);
-                //navigation.navigate('Log in');
-                // this.props.navigation.navigate('HomeScreen');
-                //AuthContext.signOut();
-              }}
-            />
-          </SettingsList>
-        </View>
-      </View>
-    </ScrollView>
-  );
+          <Button
+            onPress={() => {
+              setEditEnabled(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </ScrollView>
+      </>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -473,6 +579,18 @@ const styles = StyleSheet.create({
     //height:15,
     marginTop: 5,
     marginLeft: 80,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "left",
+    marginTop: 10,
+    marginLeft: 50,
+    color: "black",
+    fontStyle: "normal",
+    fontFamily: "Gill Sans",
+    letterSpacing: 5,
+    textDecorationColor: "#fff",
   },
 });
 
