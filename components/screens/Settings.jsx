@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   Image,
   View,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import SettingsList from "react-native-settings-list";
-import { Avatar } from "react-native-paper";
+import { Avatar, Button } from "react-native-paper";
 import { authService } from "../firebase/Firebase";
 import { storageService } from "../firebase/Firebase";
 import firebase from "../firebase/Firebase";
@@ -22,6 +22,7 @@ import { AuthContext } from "./AuthCon";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import EditSettings from  "./EditSettings"
 //import Component from 'react';
 
 // class Settings extends React.Component {
@@ -40,30 +41,71 @@ import { createStackNavigator } from "@react-navigation/stack";
 //   this.setState({ switchValue: value });
 // }
 //   render() {
-export default function Settings({ log, setLog }) {
+
+const stackNavigator = createStackNavigator();
+
+const cloudSettingsReducer = (state, action) => {
+  console.log("this is hitting in cloud settings reducer");
+  switch (action.valueToChange) {
+    case "All":
+      return {...state, tutorMode: action.tutorMode, image: action.image, tutorClasses: action.tutorClasses, tutorName: action.tutorName}
+      case "image":
+        return {...state, image: action.valueToApply}
+      case "Tutor Mode":
+      return { ...state, tutorMode: action.valueToApply };
+    // case "Course":
+    //   return { ...state, Course: action.valueToApply };
+    // case "Post":
+    //   return { ...state, Post: action.valueToApply };
+    default:
+      return new console.error("Custom Error in cloudSettingsReducer");
+  }
+};
+
+export default function Settings({ log, setLog, navigation}) {
+  // <stackNavigator.Navigator>
+  //   <stackNavigator.Screen name="Edit" component={EditSettings}/>
+
+    
+  // </stackNavigator.Navigator>
   //tutor info
   const [tutorName, setTutorName] = useState("");
   const [tutorClasses, setTutorClasses] = useState("");
-  const [tutorMode, setTutorMode] = useState(true);
-  const [tutorImage, setTutorImage] = useState();
-
-  tutorImage
-
+  const [tutorImage, setTutorImage] = useState("");
+  // const [cloudSettingsData, setCloudData] = useState({});
+  const[cloudSettingsData, dispatchCloudSettings] = useReducer(cloudSettingsReducer,{});
+  const [newImageUploaded, setNewImageBool]= useState(false);
+  // tutorImage
+  const [tutorInfo, setTutorInfo]= useState({tutorName:"", tutorClasses:[], tutorImage:"", tutorMode: false});
   const [pushNotifications, setPushNotifications] = useState(false);
   const [myImage, setMyImage] = React.useState();
   const fbCurrentUser = authService.currentUser.uid;
   const dbService = firebase.firestore();
- 
   const refImageUrl = storageService.ref(`${fbCurrentUser}/profilePic`);
-  const responseImage = refImageUrl.getDownloadURL()
-  .then((url) => {
-    //from url you can fetched the uploaded image easily
-     console.log("this is the link");
-     console.log(url);
-     setTutorImage(url);
-  })
-  .catch((e) => console.log('getting downloadURL of image error => ', e));
-  //const { v4: uuidv4 } = require('uuid');
+  
+  const responseImage =()=>{
+    if(tutorImage==="" || newImageUploaded){
+      refImageUrl.getDownloadURL()
+      .then((url) => {
+        //from url you can fetched the uploaded image easily
+         console.log("this is the link");
+         console.log(url);
+         setTutorImage(url);
+         setNewImageBool(false);
+         dispatchCloudSettings({valueToChange:"image", valueToApply:url})
+
+         dbService
+         .collection('tutors')
+         .doc(`${fbCurrentUser}`)
+         .set(cloudSettingsData)
+      })
+      .catch((e) => console.log('getting downloadURL of image error => ', e));
+      //const { v4: uuidv4 } = require('uuid');
+    }
+
+  } 
+
+  responseImage();
   
 
 
@@ -130,6 +172,7 @@ export default function Settings({ log, setLog }) {
     }).then((snapshot)=>{
 
       console.log("File uploaded");
+      setNewImageBool(true);
    
     }).catch((error)=>{
 
@@ -166,19 +209,124 @@ export default function Settings({ log, setLog }) {
   // console.log(log);
   //console.log("myImage");
   //console.log(myImage);
-  console.log(tutorMode);
 
    const modeChange = ()=>{
-    setTutorMode(!tutorMode);
-    setTutorClasses("CS166, CS157A");
-    setTutorName("Saoud");
-    
-
+     console.log("this is hitting in mode Change")
+    // setTutorMode(cloudSettingsData.tutorMode);
+    // setTutorMode(!tutorMode);
+    // setTutorClasses(cloudSettingsData.tutorClasses);
+    // setTutorName(cloudSettingsData.tutorName);
+    // setCloudData(cloudSettingsReducer(cloudSettingsData, {valueToChange:"Tutor Mode", valueToApply:!cloudSettingsData.tutorMode}));
+    dispatchCloudSettings({valueToChange: "Tutor Mode", valueToApply: !cloudSettingsData.tutorMode});
      dbService
     .collection("tutors").doc(`${fbCurrentUser}`)
-    .set({ tutorName:tutorName, tutorClasses:tutorClasses, tutorMode: tutorMode, image: tutorImage  })
+    .set(cloudSettingsData);
+    // .set({ tutorName:tutorName, tutorClasses:tutorClasses, tutorMode: tutorMode, image: tutorImage  })
     
   }; 
+
+  const fetchTutorCloudData = () => {
+    console.log("this is reached in fetchTutorCloudData");
+    if (Object.keys(cloudSettingsData).length ===0) {
+      var newUser= false;
+      dbService
+        .collection("tutors")
+        .doc(`${fbCurrentUser}`)
+        .get()
+        .then(function (doc) {
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+            var image = doc.data().image;
+            // var tutorClasses = doc.data().tutorClasses;
+            var tutorClasses = ["Default", "Test 1", "Test 2"];
+            var tutorMode = doc.data().tutorMode;
+            var tutorName = doc.data().tutorName
+            if(image==undefined){
+              image="empty"
+            }
+            if(tutorClasses==undefined){
+              tutorClasses = ["Default"];
+            }
+            if(tutorMode==undefined){
+              tutorMode=true;
+            }
+            if(tutorName==undefined){
+              newUser = true;
+              tutorName =authService.currentUser.email.substring(0, authService.currentUser.email.indexOf('@'));
+            }
+            console.log("image :",image);
+            dispatchCloudSettings({valueToChange: "All", image: image, tutorClasses: tutorClasses, 
+            tutorMode:tutorMode , tutorName: tutorName});
+
+            if(newUser){
+              dbService
+              .collection("tutors").doc(`${fbCurrentUser}`)
+              .set(cloudSettingsData);
+
+              console.log("this is reached in new user if statement");
+
+              dbService.collection("tutors").doc(`${fbCurrentUser}`)
+              .get()
+              .then(function (doc2){
+                dispatchCloudSettings({valueToChange: "All", image: doc2.data().image, tutorClasses: doc2.data().tutorClasses, 
+                tutorMode:doc2.data().tutorMode , tutorName: doc2.data().tutorName});
+              })
+            }
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+
+            var image = "empty";
+            // var tutorClasses = doc.data().tutorClasses;
+            var tutorClasses = ["Default", "Test 1", "Test 2"];
+            var tutorMode = false;
+            var tutorName = authService.currentUser.email.substring(0, authService.currentUser.email.indexOf('@'));
+            // if(image==undefined){
+            //   image="empty"
+            // }
+            // if(tutorClasses==undefined){
+            //   tutorClasses = ["Default"];
+            // }
+            // if(tutorMode==undefined){
+            //   tutorMode=true;
+            // }
+            // if(tutorName==undefined){
+            //   newUser = true;
+            //   tutorName =authService.currentUser.email.substring(0, authService.currentUser.email.indexOf('@'));
+            // }
+            console.log("image :",image);
+            dispatchCloudSettings({valueToChange: "All", image: image, tutorClasses: tutorClasses, 
+            tutorMode:tutorMode , tutorName: tutorName});
+            if(newUser){
+              dbService
+              .collection("tutors").doc(`${fbCurrentUser}`)
+              .set(cloudSettingsData);
+
+              console.log("this is reached in new user if statement in doc else statement");
+
+              dbService.collection("tutors").doc(`${fbCurrentUser}`)
+              .get()
+              .then(function (doc2){
+                dispatchCloudSettings({valueToChange: "All", image: doc2.data().image, tutorClasses: doc2.data().tutorClasses, 
+                tutorMode:doc2.data().tutorMode , tutorName: doc2.data().tutorName});
+              })
+            }
+
+          }
+        })
+        .catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+
+    }
+  };
+  fetchTutorCloudData();
+  console.log("this is cloudSettingData");
+  console.log(cloudSettingsData);
+
+  // const [tutorMode, setTutorMode] = useState(cloudSettingsData.tutorMode);
+  // console.log(tutorMode);
+
 
   // React.useEffect(() => {
   //   //getFeeds();
@@ -192,11 +340,23 @@ export default function Settings({ log, setLog }) {
     <ScrollView>
       <View style={{ flex: 1 }}>
         <View style={{ backgroundColor: "#EFEFF4" }}>
+          <Button
+            onPress={() => {
+              navigation.navigate("Edit");
+              // const tutorsItem = dbService
+              //   .collection("tutors")
+              //   .doc(`${fbCurrentUser}`).get.arguments;
+              // console.log("this is tutorsItem");
+              // console.log(tutorsItem);
+            }}
+          >
+            Edit
+          </Button>
           <TouchableOpacity onPress={handleOnPress}>
             <Avatar.Image
               style={styles.iconData}
               size={240}
-              source={{uri:tutorImage}}
+              source={{ uri: tutorImage }}
               //source={{uri:myImage.uri}}
             />
           </TouchableOpacity>
@@ -206,26 +366,25 @@ export default function Settings({ log, setLog }) {
 
             <SettingsList.Item
               title="Name"
-              titleInfo="Jane Doe"
+              titleInfo={cloudSettingsData.tutorName}
               titleInfoStyle={styles.titleInfoStyle}
             />
             <SettingsList.Item
               title="Email"
-              titleInfo="janedoe333@gmail.com"
+              titleInfo={authService.currentUser.email}
               titleInfoStyle={styles.titleInfoStyle}
               onPress={() => Alert.alert("Email is not editable")}
             />
             <SettingsList.Item
-
               title="Subjects"
-              titleInfo="CS 151, CMPE 102, MATH 123A, CS 149"
+              titleInfo={cloudSettingsData.tutorClasses}
               titleInfoStyle={styles.titleInfoStyle}
             />
             <SettingsList.Header headerStyle={{ marginTop: 20 }} />
 
             <SettingsList.Item
               hasSwitch={true}
-              switchState={tutorMode}
+              switchState={cloudSettingsData.tutorMode}
               // switchOnValueChange={() => {
               //   setTutorMode(!tutorMode);
               // }}
@@ -238,7 +397,6 @@ export default function Settings({ log, setLog }) {
               //modeChange
               switchOnValueChange={modeChange}
               hasNavArrow={false}
-              
               title="Tutor Mode"
             />
 

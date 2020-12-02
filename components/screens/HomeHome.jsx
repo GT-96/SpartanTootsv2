@@ -36,6 +36,7 @@ export default function HomeHome(props) {
   const [isPostOwner, setPostOwner] = useState(false);
 
   console.log("this is homehome");
+  console.log("this is homehome props", props)
   //console.log(props);
 
   const [feeds, setFeeds] = useState([]);
@@ -213,6 +214,7 @@ export default function HomeHome(props) {
           data={feeds}
           renderItem={renderItem}
           keyExtractor={(feed) => feed.id}
+
         />
       </View>
       <View style={styles.plusIconContainer}>

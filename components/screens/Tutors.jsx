@@ -1,6 +1,7 @@
 //import React from 'react';
 import React, { Component, useState } from "react";
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button} from 'react-native';
+import { State } from "react-native-gesture-handler";
 import firebase from "../firebase/Firebase";
 import { storageService } from "../firebase/Firebase";
 
@@ -24,7 +25,9 @@ const Item = ({ item }) => {
   //   return url
   // }
   //const uploadedUrl = await uploadImage('uri/of/local/image', 'image.jpg', `${fbCurrentUser}/sdfsdfsdfsssdsdsd`);
-  return (
+  if(!item.tutorMode){
+    console.log("this is item.image",item.image);
+    return (
     <View style={styles.listItem}>
       {console.log(responseImage)}
       <Image source={{uri:item.image}}  style={{width:65, height:65,borderRadius:30}} />
@@ -38,6 +41,7 @@ const Item = ({ item }) => {
       </TouchableOpacity>
     </View>
   );
+    }
 }
 
 export default function Tutors(props)  {
@@ -46,7 +50,7 @@ export default function Tutors(props)  {
   const fbCurrentUser = firebase.auth().currentUser.uid;
   const [tutors, setTutors] = useState([]);
   const [attachment, setAttachment] = React.useState();
-
+  const [dummyStateVar, setDummy] = useState(false);
   React.useEffect(() => {
     //getFeeds();
     dbService.collection("tutors").onSnapshot((snapshot) => {
@@ -55,9 +59,14 @@ export default function Tutors(props)  {
         ...doc.data(),
       }));
       setTutors(tutorArray);
+
+
     });
   }, []);
   
+  console.log("below is the tutors object in tutors");
+  console.log(tutors);
+
     return (
       <View style={styles.container}>
        <TouchableOpacity>
@@ -70,6 +79,10 @@ export default function Tutors(props)  {
           renderItem={Item}
           keyExtractor={(tutor) => tutor.id}
         />
+
+        <Button title="refresh page" onPress={()=>{
+          setDummy(!dummyStateVar);
+        }}/>
       </View>
     );
   
