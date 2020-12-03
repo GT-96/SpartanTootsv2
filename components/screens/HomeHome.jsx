@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 17,
-    backgroundColor: "#C5CAE9",
+    backgroundColor: "#faebd7",
   },
   separator: {
     marginTop: 10,
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     marginVertical: 8,
     backgroundColor: "white",
+    borderRadius:10
   },
   cardHeader: {
     paddingVertical: 17,

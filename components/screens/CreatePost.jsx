@@ -40,6 +40,25 @@ const textInputReducer = (state, action) => {
   props.navigation.navigate("Home");
 
 };
+
+ function Customtxt({Title, Description, onChange, value}){
+  return(
+  <>
+      <View style = { styles.container2}>
+          <Text style={styles.title}>{Description}</Text>
+              <TextInput
+              name = {Title}
+              style = {styles.input}
+              onChangeText ={(text)=> onChange(text)}
+              value = {value}
+          />
+      </View>
+      
+  </>
+  )
+}
+
+
 export default function CreatePost(props) {
 
   const initialTextInputStates = {
@@ -100,7 +119,8 @@ export default function CreatePost(props) {
             dispatchText({ textToChange: "Course", valueToApply: text })
           }
         />
-        <InputField 
+       
+         <Customtxt 
           Title="Post"
           Description="Post"
           value={Post}
@@ -108,6 +128,7 @@ export default function CreatePost(props) {
             dispatchText({ textToChange: "Post", valueToApply: text })
           }
         />
+
       </>
 
      {/* <Button 
@@ -177,8 +198,8 @@ const styles = StyleSheet.create({
     textDecorationColor: "#fff",
  },
  button: {
-    marginTop: -30,
-    marginBottom: 45,
+    marginTop: -40,
+    marginBottom: 5,
     width: 140,
     backgroundColor: "#303f9f",
     paddingVertical: 15,
@@ -192,5 +213,24 @@ buttonText: {
   textAlign: "center",
   color: "#FFFFFF",
   fontWeight: "900",
-}
+},
+input: { 
+  borderWidth: 5,
+  borderColor: "#303f9f",
+  marginTop: 15,
+  marginBottom: 60,
+ 
+  paddingHorizontal: 5,
+  width:"100%",
+  backgroundColor:"#E9F2FD",
+  borderRadius:10,
+  height:200,
+  justifyContent:"center",
+  padding:20
+},
+container2:
+{
+   backgroundColor: '#D6DAF1', // Set your own custom Color
+   marginBottom: 9,
+},
 });

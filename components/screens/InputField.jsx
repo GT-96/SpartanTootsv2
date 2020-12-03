@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     input: { 
         borderWidth: 3.5,
         borderColor: "#303f9f",
-        marginTop: 15,
-        marginBottom: 60,
+        marginTop: 0,
+        marginBottom: 0,
         marginLeft: 30,
         paddingHorizontal: 20,
         width:"80%",
@@ -41,14 +41,14 @@ const styles = StyleSheet.create({
     container:
      {
          backgroundColor: '#D6DAF1', // Set your own custom Color
-         marginBottom: 9,
+         marginBottom: 40,
      },
 
      title:{
         fontSize: 20,
         fontWeight: "bold",
         textAlign: "left",
-        marginTop: 10,
+        marginTop: 0,
         marginLeft: 50,
         color: "black",
         fontStyle: "normal",

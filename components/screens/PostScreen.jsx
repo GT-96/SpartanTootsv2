@@ -21,7 +21,7 @@ import { color } from "react-native-reanimated";
 // }
 
 const renderItem = ({ item }) => (
-    <View>
+    <View >
 
         <Text>{item.Comment}</Text>
         {/* <Text>{item.UserID}</Text>
@@ -37,9 +37,17 @@ const renderPost = ({ item }) => (
         <Button title="renderPost item.PostDetails" onPress={() => { console.log(item.PostDetails) }} />
         <Button title="renderPost item.PostDetails.Title" onPress={() => { console.log(item.PostDetails.Title) }} /> */}
 
-        <Text>{item.textState.Title}</Text>
-        <Text>{item.textState.Course}</Text>
-        <Text>{item.textState.Post}</Text>
+
+
+        <Text style={styles.by}>Posted By: indexfinger </Text>
+
+        <Text style={styles.title}>{item.textState.Title}</Text>
+        <Text style={styles.txt}>Post Details:</Text>
+        <Text style={styles.txtt}>{item.textState.Post}</Text>
+        <TouchableOpacity
+        style={styles.button} >
+         <Text style={styles.buttonText}>Join a Chat Channel</Text>
+      </TouchableOpacity>
 
 
 
@@ -212,5 +220,72 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    title:{
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginTop: 10,
+        marginLeft: 10,
+        marginBottom: 20,
+        color: "black",
+        fontStyle: "normal",
+        fontFamily: "Helvetica",
+        letterSpacing: 2,
+        textDecorationColor: "#fff",
+     },
+    txt:{
+        fontSize: 17,
+        fontWeight: "bold",
+        textAlign: "left",
+        marginTop: 10,
+        marginLeft: 3,
+        marginBottom: 20,
+        color: "black",
+        fontStyle: "normal",
+        fontFamily: "Helvetica",
+        letterSpacing: 1,
+        textDecorationColor: "#fff",
+     },
+     txtt:{
+        fontSize: 17,
+        textAlign: "left",
+        marginTop: 10,
+        marginLeft: 3,
+        marginBottom: 20,
+        color: "black",
+        fontStyle: "normal",
+        fontFamily: "Helvetica",
+        letterSpacing: 1,
+        textDecorationColor: "#fff",
+     },
+     by:{
+        fontSize: 12,
+        textAlign: "left",
+        marginTop: 10,
+        marginLeft: 3,
+        marginBottom: 20,
+        color: "black",
+        fontStyle: "normal",
+        fontFamily: "Helvetica",
+        letterSpacing: 1,
+        textDecorationColor: "#fff",
+     },
+     button: {
+        marginTop: 340,
+        marginBottom: 45,
+        width: 140,
+        backgroundColor: "#303f9f",
+        paddingVertical: 15,
+        borderRadius: 10,
+        borderWidth: 1.5,
+        borderColor: "#303f9f",
+        marginLeft: 135
+      
+    },
+    buttonText: {
+      textAlign: "center",
+      color: "#FFFFFF",
+      fontWeight: "900",
     }
 });
